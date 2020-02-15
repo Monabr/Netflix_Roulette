@@ -1,0 +1,14 @@
+<resources>
+    <string name="app_name">Netflix Roulette</string>
+
+    <string name="navigation_drawer_open">Open navigation drawer</string>
+    <string name="navigation_drawer_close">Close navigation drawer</string>
+
+    <string name="MovieAdapter_Unknown_date">Unknown date</string>
+    <string name="Fragment_saved_movies_Nothing_to_show_n_try_to_add_some_movies">"Nothing to show :(\n Try to add some movies"</string>
+    <string name="Fragment_search_with_Try_so_search_something">Try so search something</string>
+    <string name="Fragment_search_with_No_results">No results</string>
+    <string name="Navigation_Saved_movies">Saved movies</string>
+    <string name="Navigation_Search_with_title">Search with title</string>
+    <string name="Navigation_Search_with_person">Search with person</string>
+</resources>
