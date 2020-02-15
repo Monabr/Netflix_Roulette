@@ -1,5 +1,5 @@
 # Netflix_Roulette
-Application to perform request (and combination of requests) searching for movies using title or dirrector name. 
+Application to perform request (and combination of requests) searching for movies using title or director name. 
 Also you are able save results and watch them later.
 Application has different list view based on device orientation
 
