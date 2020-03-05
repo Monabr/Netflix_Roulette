@@ -62,21 +62,19 @@ class SearchViewModel @Inject constructor(
     }
 
     private fun addCategory(movies: List<Movie>) {
-        movies.let {
-            if (it.isNotEmpty()) {
-                for (index in it.indices) {
-                    if (!it[index].genre_ids.isNullOrEmpty()) {
-                        it[index].genre = ""
-                        for (indexGenreIds in it[index].genre_ids?.indices!!) {
-                            for (indexGenreList in genresList.indices) {
-                                if (it[index].genre_ids?.get(indexGenreIds) == genresList[indexGenreList].id) {
-                                    it[index].genre += genresList[indexGenreList].name + " "
-                                }
+        if (movies.isNotEmpty()) {
+            for (index in movies.indices) {
+                if (!movies[index].genre_ids.isNullOrEmpty()) {
+                    movies[index].genre = ""
+                    for (indexGenreIds in movies[index].genre_ids?.indices!!) {
+                        for (indexGenreList in genresList.indices) {
+                            if (movies[index].genre_ids?.get(indexGenreIds) == genresList[indexGenreList].id) {
+                                movies[index].genre += genresList[indexGenreList].name + " "
                             }
                         }
-                    } else {
-                        it[index].genre = "No category"
                     }
+                } else {
+                    movies[index].genre = "No category"
                 }
             }
         }
