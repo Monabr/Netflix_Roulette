@@ -7,10 +7,7 @@ import com.example.netflixroulette.models.json.jsonModels.Genre
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.models.json.jsonModels.PersonCrew
 import com.example.netflixroulette.repository.network.ThemoviedbRepository
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.SupervisorJob
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -112,6 +109,11 @@ class SearchViewModel @Inject constructor(
             "",
             ""
         )
+    }
+
+    override fun onCleared() {
+        coroutineContext.cancelChildren()
+        super.onCleared()
     }
 }
 
