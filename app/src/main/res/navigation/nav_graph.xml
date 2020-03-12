@@ -18,4 +18,8 @@
         android:id="@+id/detailsFragment"
         android:name="com.example.netflixroulette.views.DetailsFragment"
         android:label="DetailsFragment" />
+    <fragment
+        android:id="@+id/savedMovieDetailsFragment"
+        android:name="com.example.netflixroulette.views.SavedMovieDetailsFragment"
+        android:label="SavedMovieDetailsFragment" />
 </navigation>

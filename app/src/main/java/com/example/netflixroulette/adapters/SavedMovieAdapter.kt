@@ -10,17 +10,17 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.netflixroulette.R
-import com.example.netflixroulette.models.json.jsonModels.Movie
+import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.views.DetailsFragment
 import com.example.netflixroulette.views.support_views.MainContainerActivity
 import kotlinx.android.synthetic.main.item_movie.view.*
 import java.text.SimpleDateFormat
 
-const val IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
 
-class MovieAdapter(
-    var movies: List<Movie>
-) : RecyclerView.Adapter<MovieAdapter.ViewHolder>() {
+
+class SavedMovieAdapter(
+    var movies: List<MovieDB>
+) : RecyclerView.Adapter<SavedMovieAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
         ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false))
@@ -31,7 +31,7 @@ class MovieAdapter(
         holder.bind(movies[position], position)
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(movie: Movie, position: Int) {
+        fun bind(movie: MovieDB, position: Int) {
 
             val circularProgressDrawable = CircularProgressDrawable(itemView.context)
                 .apply {
@@ -67,8 +67,8 @@ class MovieAdapter(
             if (!itemView.hasOnClickListeners()) {
                 itemView.setOnClickListener {
                     (itemView.context as MainContainerActivity).findNavController(R.id.container)
-                        .navigate(R.id.detailsFragment, Bundle().apply {
-                            var arr = ArrayList<Movie>(movies)
+                        .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
+                            var arr = ArrayList<MovieDB>(movies)
                             putParcelableArrayList(DetailsFragment.MOVIES, arr)
                             putInt(DetailsFragment.CURRENT_ITEM, position)
                         })

@@ -1,6 +1,6 @@
-package com.example.netflixroulette.network
+package com.example.netflixroulette.repository.network
 
-import com.example.netflixroulette.models.*
+import com.example.netflixroulette.models.json.jsonResponse.*
 import kotlinx.coroutines.Deferred
 import retrofit2.http.GET
 import retrofit2.http.Path

@@ -1,7 +1,7 @@
 package com.example.netflixroulette.dagger.modules
 
-import com.example.netflixroulette.network.ThemoviedbRepository
-import com.example.netflixroulette.network.ThemoviedbRepositoryImpl
+import com.example.netflixroulette.repository.network.ThemoviedbRepository
+import com.example.netflixroulette.repository.network.ThemoviedbRepositoryImpl
 import dagger.Binds
 import dagger.Module
 

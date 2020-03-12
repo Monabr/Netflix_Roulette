@@ -1,7 +1,7 @@
 package com.example.netflixroulette.dagger.modules
 
 import androidx.annotation.NonNull
-import com.example.netflixroulette.network.ThemoviedbApi
+import com.example.netflixroulette.repository.network.ThemoviedbApi
 import com.jakewharton.retrofit2.adapter.kotlin.coroutines.CoroutineCallAdapterFactory
 import dagger.Module
 import dagger.Provides

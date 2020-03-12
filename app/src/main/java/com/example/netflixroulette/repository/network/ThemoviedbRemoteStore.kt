@@ -1,4 +1,4 @@
-package com.example.netflixroulette.network
+package com.example.netflixroulette.repository.network
 
 import javax.inject.Inject
 

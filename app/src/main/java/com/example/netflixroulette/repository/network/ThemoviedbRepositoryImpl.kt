@@ -1,7 +1,7 @@
-package com.example.netflixroulette.network
+package com.example.netflixroulette.repository.network
 
-import com.example.netflixroulette.database.MovieDatabase
-import com.example.netflixroulette.models.Movie
+import com.example.netflixroulette.models.db.MovieDB
+import com.example.netflixroulette.repository.database.MovieDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -12,7 +12,6 @@ class ThemoviedbRepositoryImpl @Inject constructor(
     private val movieDatabase: MovieDatabase
 ) : ThemoviedbRepository {
 
-
     override suspend fun getSearchedMovies(movieName: String) = themoviedbRemoteStore.getSearchedMovies(movieName)
 
     override suspend fun getGenres() = themoviedbRemoteStore.getGenres()
@@ -21,9 +20,9 @@ class ThemoviedbRepositoryImpl @Inject constructor(
 
     override suspend fun getAllMovies() = movieDatabase.movieDao().getAllMovies()
 
-    override suspend fun insertMovie(movie: Movie) = movieDatabase.movieDao().insert(movie)
+    override suspend fun insertMovie(movie: MovieDB) = movieDatabase.movieDao().insert(movie)
 
-    override suspend fun deleteMovie(movie: Movie) = movieDatabase.movieDao().delete(movie)
+    override suspend fun deleteMovie(movie: MovieDB) = movieDatabase.movieDao().delete(movie)
 
     override suspend fun getMovieById(id: Int) = movieDatabase.movieDao().getMovieById(id)
 
@@ -31,6 +30,4 @@ class ThemoviedbRepositoryImpl @Inject constructor(
         themoviedbRemoteStore.getSearchedPersons(personName)
 
     override suspend fun getPersonMovies(personId: Int) = themoviedbRemoteStore.getPersonMovies(personId)
-
-
 }

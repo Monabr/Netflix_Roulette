@@ -1,6 +1,7 @@
-package com.example.netflixroulette.models
+package com.example.netflixroulette.models.json.jsonResponse
 
 import android.os.Parcelable
+import com.example.netflixroulette.models.json.jsonModels.Movie
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize

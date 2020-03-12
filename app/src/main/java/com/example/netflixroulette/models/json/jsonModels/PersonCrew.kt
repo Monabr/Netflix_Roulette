@@ -1,4 +1,4 @@
-package com.example.netflixroulette.models
+package com.example.netflixroulette.models.json.jsonModels
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize

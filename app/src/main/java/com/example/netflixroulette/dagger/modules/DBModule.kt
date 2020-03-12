@@ -1,8 +1,7 @@
 package com.example.netflixroulette.dagger.modules
 
-import android.app.Application
 import android.content.Context
-import com.example.netflixroulette.database.MovieDatabase
+import com.example.netflixroulette.repository.database.MovieDatabase
 import dagger.Module
 import dagger.Provides
 

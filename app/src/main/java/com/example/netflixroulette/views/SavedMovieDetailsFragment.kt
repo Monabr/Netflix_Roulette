@@ -6,24 +6,24 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.netflixroulette.R
-import com.example.netflixroulette.adapters.MovieDetailsAdapter
+import com.example.netflixroulette.adapters.SavedMovieDetailsAdapter
 import com.example.netflixroulette.dagger.AppComponentProvider
-import com.example.netflixroulette.models.json.jsonModels.Movie
-import com.example.netflixroulette.viewModels.DetailsViewModel
+import com.example.netflixroulette.models.db.MovieDB
+import com.example.netflixroulette.viewModels.SavedMovieDetailsViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
 import kotlinx.android.synthetic.main.activity_main_container.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
-class DetailsFragment : BaseFragment(), MovieDetailsAdapter.CallBackAdapterListener {
+class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallBackAdapterListener {
 
-    private val viewModel: DetailsViewModel by viewModels()
+    private val viewModel: SavedMovieDetailsViewModel by viewModels()
 
-    private lateinit var movieDetailsAdapter: MovieDetailsAdapter
+    private lateinit var savedMovieDetailsAdapter: SavedMovieDetailsAdapter
     private lateinit var viewLocal: View
-    private lateinit var movies: List<Movie>
+    private lateinit var movies: List<MovieDB>
 
     companion object {
-        fun newInstance() = DetailsFragment()
+        fun newInstance() = SavedMovieDetailsFragment()
 
         const val MOVIES = "movies"
         const val CURRENT_ITEM = "current_item"
@@ -58,7 +58,7 @@ class DetailsFragment : BaseFragment(), MovieDetailsAdapter.CallBackAdapterListe
         activity?.onBackPressed()
     }
 
-    override fun onAdapterItemSavePressed(movie: Movie) {
+    override fun onAdapterItemSavePressed(movie: MovieDB) {
         viewModel.handleActionSave(
             viewLocal,
             movie
@@ -66,12 +66,12 @@ class DetailsFragment : BaseFragment(), MovieDetailsAdapter.CallBackAdapterListe
     }
 
     private fun initViewPager() {
-        fragment_details_vp_main.adapter = movieDetailsAdapter
+        fragment_details_vp_main.adapter = savedMovieDetailsAdapter
         fragment_details_vp_main.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
     }
 
     private fun initFields() {
-        movies = arguments?.getParcelableArrayList<Movie>(MOVIES)?.toList() ?: ArrayList()
-        movieDetailsAdapter = MovieDetailsAdapter(movies, this)
+        movies = arguments?.getParcelableArrayList<MovieDB>(MOVIES)?.toList() ?: ArrayList()
+        savedMovieDetailsAdapter = SavedMovieDetailsAdapter(movies, this)
     }
 }

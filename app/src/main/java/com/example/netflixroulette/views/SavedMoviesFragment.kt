@@ -11,7 +11,7 @@ import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
-import com.example.netflixroulette.adapters.MovieAdapter
+import com.example.netflixroulette.adapters.SavedMovieAdapter
 import com.example.netflixroulette.dagger.AppComponentProvider
 import com.example.netflixroulette.viewModels.SavedMoviesViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
@@ -59,7 +59,7 @@ class SavedMoviesFragment : BaseFragment() {
             if (!it.isNullOrEmpty()) {
                 fragment_start_rv_movies_list.run {
                     viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
-                    adapter = MovieAdapter(it).apply {
+                    adapter = SavedMovieAdapter(it).apply {
                         layoutAnimation = AnimationUtils.loadLayoutAnimation(
                             context,
                             R.anim.layout_animation_from_right

@@ -2,6 +2,7 @@ package com.example.netflixroulette.dagger
 
 import com.example.netflixroulette.dagger.modules.*
 import com.example.netflixroulette.views.DetailsFragment
+import com.example.netflixroulette.views.SavedMovieDetailsFragment
 import com.example.netflixroulette.views.SavedMoviesFragment
 import com.example.netflixroulette.views.SearchWithFragment
 import dagger.Component
@@ -18,6 +19,7 @@ interface AppComponent {
     fun inject(savedMoviesFragment: SavedMoviesFragment)
     fun inject(searchWithFragment: SearchWithFragment)
     fun inject(detailsFragment: DetailsFragment)
+    fun inject(savedMovieDetailsFragment: SavedMovieDetailsFragment)
 
 
     @Component.Builder

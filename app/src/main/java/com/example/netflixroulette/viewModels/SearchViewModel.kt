@@ -3,10 +3,10 @@ package com.example.netflixroulette.viewModels
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import com.example.netflixroulette.models.Genre
-import com.example.netflixroulette.models.Movie
-import com.example.netflixroulette.models.PersonCrew
-import com.example.netflixroulette.network.ThemoviedbRepository
+import com.example.netflixroulette.models.json.jsonModels.Genre
+import com.example.netflixroulette.models.json.jsonModels.Movie
+import com.example.netflixroulette.models.json.jsonModels.PersonCrew
+import com.example.netflixroulette.repository.network.ThemoviedbRepository
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.SupervisorJob

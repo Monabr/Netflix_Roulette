@@ -1,16 +1,15 @@
-package com.example.netflixroulette.models
+package com.example.netflixroulette.models.json.jsonModels
 
 import android.os.Parcelable
 import kotlinx.android.parcel.Parcelize
 
 @Parcelize
-data class Cast (
-    val cast_id : Int,
-    val character : String,
+data class Crew (
     val credit_id : String,
+    val department : String,
     val gender : Int,
     val id : Int,
+    val job : String,
     val name : String,
-    val order : Int,
     val profile_path : String
 ) : Parcelable

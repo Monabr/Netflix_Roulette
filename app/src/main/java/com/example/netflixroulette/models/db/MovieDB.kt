@@ -1,4 +1,4 @@
-package com.example.netflixroulette.models
+package com.example.netflixroulette.models.db
 
 import android.os.Parcelable
 import androidx.room.Embedded
@@ -8,7 +8,7 @@ import kotlinx.android.parcel.Parcelize
 
 @Parcelize
 @Entity
-data class Movie(
+data class MovieDB(
     val popularity: Double,
     @PrimaryKey
     val id: Int,

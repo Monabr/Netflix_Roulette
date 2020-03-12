@@ -3,6 +3,7 @@ package com.example.netflixroulette.dagger.modules
 import androidx.lifecycle.ViewModel
 import com.example.netflixroulette.dagger.ViewModelKey
 import com.example.netflixroulette.viewModels.DetailsViewModel
+import com.example.netflixroulette.viewModels.SavedMovieDetailsViewModel
 import com.example.netflixroulette.viewModels.SavedMoviesViewModel
 import com.example.netflixroulette.viewModels.SearchViewModel
 import com.squareup.inject.assisted.dagger2.AssistedModule
@@ -29,4 +30,8 @@ abstract class ViewModelsModule {
     @ViewModelKey(DetailsViewModel::class)
     abstract fun bindsDetailsViewModel(vm: DetailsViewModel): ViewModel
 
+    @Binds
+    @IntoMap
+    @ViewModelKey(SavedMovieDetailsViewModel::class)
+    abstract fun bindsSavedMovieDetailsViewModel(vm: SavedMovieDetailsViewModel): ViewModel
 }

@@ -8,15 +8,14 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.netflixroulette.R
-import com.example.netflixroulette.models.json.jsonModels.Movie
+import com.example.netflixroulette.models.db.MovieDB
 import kotlinx.android.synthetic.main.item_details.view.*
 import java.text.SimpleDateFormat
 
-
-class MovieDetailsAdapter(
-    var movies: List<Movie>,
+class SavedMovieDetailsAdapter(
+    var movies: List<MovieDB>,
     var callBackAdapterListener: CallBackAdapterListener
-) : RecyclerView.Adapter<MovieDetailsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SavedMovieDetailsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         LayoutInflater.from(parent.context).inflate(
@@ -31,7 +30,7 @@ class MovieDetailsAdapter(
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(movies[position])
 
     inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(movie: Movie) {
+        fun bind(movie: MovieDB) {
 
             val circularProgressDrawable = CircularProgressDrawable(itemView.context)
                 .apply {
@@ -78,6 +77,6 @@ class MovieDetailsAdapter(
 
     interface CallBackAdapterListener {
         fun onAdapterItemBackPressed()
-        fun onAdapterItemSavePressed(movie: Movie)
+        fun onAdapterItemSavePressed(movie: MovieDB)
     }
 }
