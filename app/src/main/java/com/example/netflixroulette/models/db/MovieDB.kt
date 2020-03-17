@@ -6,6 +6,10 @@ import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
 
+/**
+ * Movie model exactly for database because of Clean Architecture
+ *
+ */
 @Parcelize
 @Entity
 data class MovieDB(

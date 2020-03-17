@@ -14,14 +14,35 @@ import kotlin.coroutines.CoroutineContext
 class SearchViewModel @Inject constructor(
     private val themoviedbRepository: ThemoviedbRepository
 ) : ViewModel(), CoroutineScope {
+
+    /**
+     * Job for [coroutineContext]
+     * 
+     */
     private val job = SupervisorJob()
+
+    /**
+     * Using for set default dispatcher so you no need to create yours for [launch] something.
+     *
+     * If you want to cancel all coroutines that started here use [cancelChildren].
+     * For example coroutineContext.cancelChildren()
+     */
     override val coroutineContext: CoroutineContext
         get() = Dispatchers.IO + job
 
-    lateinit var genresList: List<Genre>
+    /**
+     * Local list of movies genres. Using to name genres of movie depends of genre id from [Movie.genre_ids]
+     */
+    private lateinit var genresList: List<Genre>
 
+    /**
+     * List of movies that will be observed by fragment
+     */
     var movies: MutableLiveData<List<Movie>> = MutableLiveData()
 
+    /**
+     * Saved position of items list
+     */
     var scrollPosition: Parcelable? = null
 
     init {
@@ -30,6 +51,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handle search request to search using title and post value to [movies]
+     *
+     * @param movieName just movie name
+     */
     fun handleSearchByTitle(movieName: String) = launch {
         if (movieName.isNotBlank()) {
             var moviesResponse = themoviedbRepository.getSearchedMovies(movieName)
@@ -41,9 +67,14 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Handle search request to search using name of movie director and post value to [movies]
+     *
+     * @param personName just name of movie director
+     */
     fun handleSearchByPerson(personName: String) = launch {
         if (personName.isNotBlank()) {
-            var persons = themoviedbRepository.getSeachedPersons(personName)
+            var persons = themoviedbRepository.getSearchedPersons(personName)
             var person = persons.find { it.known_for_department == "Directing" }
             if (person != null) {
                 var credits = themoviedbRepository.getPersonMovies(person.id)
@@ -58,6 +89,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Add name of category for every movie in the list using [genresList]
+     *
+     * @param movies just list of movie to edit
+     */
     private fun addCategory(movies: List<Movie>) {
         if (movies.isNotEmpty()) {
             for (index in movies.indices) {
@@ -77,6 +113,11 @@ class SearchViewModel @Inject constructor(
         }
     }
 
+    /**
+     * Search for director for every movie in the list
+     *
+     * @param movies just list of movie to edit
+     */
     private suspend fun addDirector(movies: List<Movie>) {
         for (index in movies.indices) {
             movies[index].director = ""
@@ -90,7 +131,12 @@ class SearchViewModel @Inject constructor(
         }
     }
 
-
+    /**
+     * Convert results for [Movie] object to use it in application
+     *
+     * @param personCrew object to convert
+     * @return usual [Movie] object
+     */
     private fun mapToMovie(personCrew: PersonCrew): Movie {
         return Movie(
             personCrew.popularity,
@@ -111,6 +157,10 @@ class SearchViewModel @Inject constructor(
         )
     }
 
+    /**
+     * Using to cancel all coroutines when we no need it by [cancelChildren]
+     *
+     */
     override fun onCleared() {
         coroutineContext.cancelChildren()
         super.onCleared()

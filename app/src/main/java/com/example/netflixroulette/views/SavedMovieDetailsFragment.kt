@@ -11,16 +11,26 @@ import com.example.netflixroulette.dagger.AppComponentProvider
 import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.viewModels.SavedMovieDetailsViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main_container.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
 class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallBackAdapterListener {
 
+    /**
+     * ViewModel for handling delete or save action
+     */
     private val viewModel: SavedMovieDetailsViewModel by viewModels()
 
+    /**
+     * Adapter for viewPager
+     */
     private lateinit var savedMovieDetailsAdapter: SavedMovieDetailsAdapter
+
+    /**
+     * Local link on view, we need it for [Snackbar.make] in [SavedMovieDetailsViewModel.handleActionSave]
+     */
     private lateinit var viewLocal: View
-    private lateinit var movies: List<MovieDB>
 
     companion object {
         fun newInstance() = SavedMovieDetailsFragment()
@@ -54,7 +64,7 @@ class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallB
         super.onStop()
     }
 
-    override fun onAdapterItemBackPressed() {
+    override fun onAdapterItemBackArrowPressed() {
         activity?.onBackPressed()
     }
 
@@ -71,7 +81,8 @@ class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallB
     }
 
     private fun initFields() {
-        movies = arguments?.getParcelableArrayList<MovieDB>(MOVIES)?.toList() ?: ArrayList()
-        savedMovieDetailsAdapter = SavedMovieDetailsAdapter(movies, this)
+        savedMovieDetailsAdapter = SavedMovieDetailsAdapter(
+            arguments?.getParcelableArrayList<MovieDB>(MOVIES)?.toList() ?: ArrayList(),
+            this)
     }
 }

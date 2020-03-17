@@ -21,6 +21,9 @@ import kotlinx.android.synthetic.main.fragment_saved_movies.*
 
 class SavedMoviesFragment : BaseFragment() {
 
+    /**
+     * ViewModel for get saved movies from database
+     */
     private val viewModel: SavedMoviesViewModel by viewModels()
 
     companion object {
@@ -47,12 +50,43 @@ class SavedMoviesFragment : BaseFragment() {
         initObserver()
     }
 
+    /**
+     * This event is using for save position of items list when we left fragment by clicking on item
+     *
+     */
     override fun onStop() {
         viewModel.scrollPosition =
             fragment_start_rv_movies_list.layoutManager?.onSaveInstanceState()
         super.onStop()
     }
 
+    /**
+     * Simply checking menu item because we enter to this fragment
+     *
+     */
+    private fun checkMenu() {
+        (activity as MainContainerActivity).setNavItemChecked(0)
+    }
+
+    /**
+     * Adapter initialization depends of devise orientation and also we restoring position of items list
+     *
+     */
+    private fun initAdapter() {
+        fragment_start_rv_movies_list.layoutManager =
+            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
+                GridLayoutManager(context, 2)
+            } else {
+                LinearLayoutManager(context)
+            }
+
+        fragment_start_rv_movies_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
+    }
+
+    /**
+     * Observer initialization for getting data and using mechanism of saving and restore position of items list to prevent flickering
+     *
+     */
     private fun initObserver() {
         viewModel.movies.removeObservers(this)
         viewModel.movies.observe(this) {
@@ -66,28 +100,11 @@ class SavedMoviesFragment : BaseFragment() {
                         )
                         scheduleLayoutAnimation()
                     }
-
                     layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
                     fragment_start_tv_label_for_movie.visibility = View.GONE
                 }
             }
             fragment_start_pb_load.visibility = View.GONE
-
         }
-    }
-
-    private fun initAdapter() {
-        fragment_start_rv_movies_list.layoutManager =
-            if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
-                GridLayoutManager(context, 2)
-            } else {
-                LinearLayoutManager(context)
-            }
-
-        fragment_start_rv_movies_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
-    }
-
-    private fun checkMenu() {
-        (activity as MainContainerActivity).setNavItemChecked(0)
     }
 }

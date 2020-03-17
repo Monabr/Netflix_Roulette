@@ -11,11 +11,12 @@ import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.netflixroulette.R
 import com.example.netflixroulette.models.db.MovieDB
-import com.example.netflixroulette.views.DetailsFragment
+import com.example.netflixroulette.views.SearchedMovieDetailsFragment
 import com.example.netflixroulette.views.support_views.MainContainerActivity
 import kotlinx.android.synthetic.main.item_movie.view.*
 import java.text.SimpleDateFormat
-
+import java.util.*
+import kotlin.collections.ArrayList
 
 
 class SavedMovieAdapter(
@@ -49,10 +50,10 @@ class SavedMovieAdapter(
                 .error(R.drawable.no_image_poster)
                 .into(itemView.item_movie_iv_poster)
 
-            itemView.item_movie_tv_category.text = movie.genre.toUpperCase()
+            itemView.item_movie_tv_category.text = movie.genre.toUpperCase(Locale.ROOT)
             itemView.item_movie_tv_director.text = movie.director
             itemView.item_movie_tv_name.text = movie.title
-            itemView.item_movie_tv_rating.text = movie.vote_average.toString() + "/10"
+            itemView.item_movie_tv_rating.text = movie.vote_average.toString() + R.string.Movie_max_rate
 
             if (!movie.release_date.isNullOrBlank()) {
                 val parser = SimpleDateFormat("yyyy-MM-dd")
@@ -68,9 +69,9 @@ class SavedMovieAdapter(
                 itemView.setOnClickListener {
                     (itemView.context as MainContainerActivity).findNavController(R.id.container)
                         .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
-                            var arr = ArrayList<MovieDB>(movies)
-                            putParcelableArrayList(DetailsFragment.MOVIES, arr)
-                            putInt(DetailsFragment.CURRENT_ITEM, position)
+                            val arr = ArrayList<MovieDB>(movies)
+                            putParcelableArrayList(SearchedMovieDetailsFragment.MOVIES, arr)
+                            putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
                         })
                 }
             }

@@ -2,6 +2,10 @@ package com.example.netflixroulette.repository.network
 
 import javax.inject.Inject
 
+/**
+ * Layer for get exactly data from request result that we need and also make our requests looks nice
+ *
+ */
 class ThemoviedbRemoteStore @Inject constructor(
     private val themoviedbApi: ThemoviedbApi
 ) {

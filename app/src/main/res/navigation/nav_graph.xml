@@ -16,7 +16,7 @@
         android:label="SearchWithFragment" />
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.example.netflixroulette.views.DetailsFragment"
+        android:name="com.example.netflixroulette.views.SearchedMovieDetailsFragment"
         android:label="DetailsFragment" />
     <fragment
         android:id="@+id/savedMovieDetailsFragment"

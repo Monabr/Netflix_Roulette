@@ -11,6 +11,9 @@ import com.example.netflixroulette.views.SearchWithFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main_container.*
 
+/**
+ * Main container for all application fragments since it's single activity application
+ */
 class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -29,6 +32,10 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         activity_main_container_nv_navigation.setNavigationItemSelectedListener(this)
     }
 
+    /**
+     * It will just close left menu when you press back button
+     *
+     */
     override fun onBackPressed() {
         if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
             drawer_layout.closeDrawer(GravityCompat.START)
@@ -57,6 +64,13 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         return true
     }
 
+    /**
+     * Use it to check menu item when you change fragments.
+     *
+     * No need to uncheck items there is always only one can be the chosen one (if you check the new one the old one will be unchecked)
+     *
+     * @param id id item that should be checked
+     */
     fun setNavItemChecked(id: Int) {
         activity_main_container_nv_navigation.menu.getItem(id).isChecked = true
     }

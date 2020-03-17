@@ -6,6 +6,17 @@ import androidx.lifecycle.ViewModelProvider
 import com.example.netflixroulette.factory.InjectingSavedStateViewModelFactory
 import javax.inject.Inject
 
+/**
+ * Use this fragment as parent get your viewModel injected using [viewModels()][androidx.fragment.app.viewModels]
+ *
+ * ```
+ * class MyFragment : Fragment() {
+ *     val viewModel: MYViewModel by viewModels()
+ * }
+ * ```
+ *
+ * Also you should define your viewModel in [ViewModelsModule.kt][com.example.netflixroulette.dagger.modules.ViewModelsModule]
+ */
 abstract class BaseFragment : Fragment(), HasDefaultViewModelProviderFactory {
 
     @Inject

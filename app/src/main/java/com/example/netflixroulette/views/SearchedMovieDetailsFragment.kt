@@ -6,24 +6,34 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.netflixroulette.R
-import com.example.netflixroulette.adapters.MovieDetailsAdapter
+import com.example.netflixroulette.adapters.SearchedMovieDetailsAdapter
 import com.example.netflixroulette.dagger.AppComponentProvider
 import com.example.netflixroulette.models.json.jsonModels.Movie
-import com.example.netflixroulette.viewModels.DetailsViewModel
+import com.example.netflixroulette.viewModels.SearchedMovieDetailsViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
+import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main_container.*
 import kotlinx.android.synthetic.main.fragment_details.*
 
-class DetailsFragment : BaseFragment(), MovieDetailsAdapter.CallBackAdapterListener {
+class SearchedMovieDetailsFragment : BaseFragment(), SearchedMovieDetailsAdapter.CallBackAdapterListener {
 
-    private val viewModel: DetailsViewModel by viewModels()
+    /**
+     * ViewModel for handling save action or undo save
+     */
+    private val viewModelSearchedMovie: SearchedMovieDetailsViewModel by viewModels()
 
-    private lateinit var movieDetailsAdapter: MovieDetailsAdapter
+    /**
+     * Adapter for viewPager
+     */
+    private lateinit var searchedMovieDetailsAdapter: SearchedMovieDetailsAdapter
+
+    /**
+     * Local link on view, we need it for [Snackbar.make] in [SearchedMovieDetailsViewModel.handleActionSave]
+     */
     private lateinit var viewLocal: View
-    private lateinit var movies: List<Movie>
 
     companion object {
-        fun newInstance() = DetailsFragment()
+        fun newInstance() = SearchedMovieDetailsFragment()
 
         const val MOVIES = "movies"
         const val CURRENT_ITEM = "current_item"
@@ -54,24 +64,25 @@ class DetailsFragment : BaseFragment(), MovieDetailsAdapter.CallBackAdapterListe
         super.onStop()
     }
 
-    override fun onAdapterItemBackPressed() {
+    override fun onAdapterItemBackArrowPressed() {
         activity?.onBackPressed()
     }
 
     override fun onAdapterItemSavePressed(movie: Movie) {
-        viewModel.handleActionSave(
+        viewModelSearchedMovie.handleActionSave(
             viewLocal,
             movie
         )
     }
 
-    private fun initViewPager() {
-        fragment_details_vp_main.adapter = movieDetailsAdapter
-        fragment_details_vp_main.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
+    private fun initFields() {
+        searchedMovieDetailsAdapter = SearchedMovieDetailsAdapter(
+            arguments?.getParcelableArrayList<Movie>(MOVIES)?.toList() ?: ArrayList(),
+            this)
     }
 
-    private fun initFields() {
-        movies = arguments?.getParcelableArrayList<Movie>(MOVIES)?.toList() ?: ArrayList()
-        movieDetailsAdapter = MovieDetailsAdapter(movies, this)
+    private fun initViewPager() {
+        fragment_details_vp_main.adapter = searchedMovieDetailsAdapter
+        fragment_details_vp_main.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
     }
 }

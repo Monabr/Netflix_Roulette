@@ -65,7 +65,7 @@ class SavedMovieDetailsAdapter(
             itemView.item_details_tv_summary.text = movie.overview
 
             itemView.item_details_ib_back.setOnClickListener {
-                callBackAdapterListener.onAdapterItemBackPressed()
+                callBackAdapterListener.onAdapterItemBackArrowPressed()
             }
 
             itemView.item_details_ib_save.setOnClickListener {
@@ -76,7 +76,7 @@ class SavedMovieDetailsAdapter(
     }
 
     interface CallBackAdapterListener {
-        fun onAdapterItemBackPressed()
+        fun onAdapterItemBackArrowPressed()
         fun onAdapterItemSavePressed(movie: MovieDB)
     }
 }

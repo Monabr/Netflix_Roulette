@@ -9,6 +9,11 @@ import dagger.Reusable
 import javax.inject.Inject
 import javax.inject.Provider
 
+/**
+ * Makes "magic" with creating different types of viewModels (with [SavedStateHandle] and without)
+ * when you are using [viewModels()][androidx.fragment.app.viewModels] in [BaseFragment][com.example.netflixroulette.views.support_views.BaseFragment]
+ *
+ */
 @Reusable
 class InjectingSavedStateViewModelFactory @Inject constructor(
     private val assistedFactories: Map<Class<out ViewModel>, @JvmSuppressWildcards AssistedSavedStateViewModelFactory<out ViewModel>>,

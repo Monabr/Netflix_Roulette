@@ -13,10 +13,10 @@ import kotlinx.android.synthetic.main.item_details.view.*
 import java.text.SimpleDateFormat
 
 
-class MovieDetailsAdapter(
+class SearchedMovieDetailsAdapter(
     var movies: List<Movie>,
     var callBackAdapterListener: CallBackAdapterListener
-) : RecyclerView.Adapter<MovieDetailsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SearchedMovieDetailsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
         LayoutInflater.from(parent.context).inflate(
@@ -66,7 +66,7 @@ class MovieDetailsAdapter(
             itemView.item_details_tv_summary.text = movie.overview
 
             itemView.item_details_ib_back.setOnClickListener {
-                callBackAdapterListener.onAdapterItemBackPressed()
+                callBackAdapterListener.onAdapterItemBackArrowPressed()
             }
 
             itemView.item_details_ib_save.setOnClickListener {
@@ -77,7 +77,7 @@ class MovieDetailsAdapter(
     }
 
     interface CallBackAdapterListener {
-        fun onAdapterItemBackPressed()
+        fun onAdapterItemBackArrowPressed()
         fun onAdapterItemSavePressed(movie: Movie)
     }
 }

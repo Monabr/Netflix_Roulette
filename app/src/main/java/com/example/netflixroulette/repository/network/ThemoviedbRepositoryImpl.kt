@@ -5,7 +5,10 @@ import com.example.netflixroulette.repository.database.MovieDatabase
 import javax.inject.Inject
 import javax.inject.Singleton
 
-
+/**
+ * Implementation of repository
+ *
+ */
 @Singleton
 class ThemoviedbRepositoryImpl @Inject constructor(
     private val themoviedbRemoteStore: ThemoviedbRemoteStore,
@@ -26,7 +29,7 @@ class ThemoviedbRepositoryImpl @Inject constructor(
 
     override suspend fun getMovieById(id: Int) = movieDatabase.movieDao().getMovieById(id)
 
-    override suspend fun getSeachedPersons(personName: String) =
+    override suspend fun getSearchedPersons(personName: String) =
         themoviedbRemoteStore.getSearchedPersons(personName)
 
     override suspend fun getPersonMovies(personId: Int) = themoviedbRemoteStore.getPersonMovies(personId)

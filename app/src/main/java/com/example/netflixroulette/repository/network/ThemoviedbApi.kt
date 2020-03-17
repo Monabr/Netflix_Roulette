@@ -8,6 +8,10 @@ import retrofit2.http.Query
 
 const val API_KEY = "9d4cbef8fef8814809eead3ab4dcdf92"
 
+/**
+ * Retrofit mechanism for using API by making requests
+ *
+ */
 interface ThemoviedbApi {
 
     @GET("search/movie?api_key=$API_KEY")

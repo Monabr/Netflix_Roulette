@@ -11,4 +11,6 @@
     <string name="Navigation_Saved_movies">Saved movies</string>
     <string name="Navigation_Search_with_title">Search with title</string>
     <string name="Navigation_Search_with_person">Search with person</string>
+    
+    <string name="Movie_max_rate">/10</string>
 </resources>
