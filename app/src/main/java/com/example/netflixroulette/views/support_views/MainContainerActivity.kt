@@ -21,7 +21,7 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
         setContentView(R.layout.activity_main_container)
         setSupportActionBar(activity_main_container_toolbar)
 
-        var toggle = ActionBarDrawerToggle(
+        val toggle = ActionBarDrawerToggle(
             this, drawer_layout, activity_main_container_toolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
@@ -45,20 +45,22 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        when {
-            item.itemId == R.id.nav_saved && !item.isChecked ->
-                findNavController(R.id.container).navigate(R.id.SavedMoviesFragment)
+        if(!item.isChecked) {
+            when (item.itemId) {
+                R.id.nav_saved ->
+                    findNavController(R.id.container).navigate(R.id.SavedMoviesFragment)
 
-            item.itemId == R.id.nav_search_with_title && !item.isChecked -> findNavController(R.id.container).navigate(
-                R.id.searchWithFragment,
-                Bundle().apply {
-                    putString(SearchWithFragment.SEARCH_WITH, SearchWithFragment.TITLE)
-                })
-            item.itemId == R.id.nav_search_with_person && !item.isChecked -> findNavController(R.id.container).navigate(
-                R.id.searchWithFragment,
-                Bundle().apply {
-                    putString(SearchWithFragment.SEARCH_WITH, SearchWithFragment.PERSON)
-                })
+                R.id.nav_search_with_title -> findNavController(R.id.container).navigate(
+                    R.id.searchWithFragment,
+                    Bundle().apply {
+                        putString(SearchWithFragment.SEARCH_WITH, SearchWithFragment.TITLE)
+                    })
+                R.id.nav_search_with_person -> findNavController(R.id.container).navigate(
+                    R.id.searchWithFragment,
+                    Bundle().apply {
+                        putString(SearchWithFragment.SEARCH_WITH, SearchWithFragment.PERSON)
+                    })
+            }
         }
         drawer_layout.closeDrawer(GravityCompat.START)
         return true

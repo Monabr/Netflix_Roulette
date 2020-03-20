@@ -75,14 +75,14 @@ class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallB
         )
     }
 
-    private fun initViewPager() {
-        fragment_details_vp_main.adapter = savedMovieDetailsAdapter
-        fragment_details_vp_main.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
-    }
-
     private fun initFields() {
         savedMovieDetailsAdapter = SavedMovieDetailsAdapter(
             arguments?.getParcelableArrayList<MovieDB>(MOVIES)?.toList() ?: ArrayList(),
             this)
+    }
+
+    private fun initViewPager() {
+        fragment_details_vp_main.adapter = savedMovieDetailsAdapter
+        fragment_details_vp_main.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
     }
 }

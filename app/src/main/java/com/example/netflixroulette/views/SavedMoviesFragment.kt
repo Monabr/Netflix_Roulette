@@ -56,7 +56,7 @@ class SavedMoviesFragment : BaseFragment() {
      */
     override fun onStop() {
         viewModel.scrollPosition =
-            fragment_start_rv_movies_list.layoutManager?.onSaveInstanceState()
+            fragment_saved_movies_rv_movies_list.layoutManager?.onSaveInstanceState()
         super.onStop()
     }
 
@@ -73,14 +73,14 @@ class SavedMoviesFragment : BaseFragment() {
      *
      */
     private fun initAdapter() {
-        fragment_start_rv_movies_list.layoutManager =
+        fragment_saved_movies_rv_movies_list.layoutManager =
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 2)
             } else {
                 LinearLayoutManager(context)
             }
 
-        fragment_start_rv_movies_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
+        fragment_saved_movies_rv_movies_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
     }
 
     /**
@@ -91,7 +91,7 @@ class SavedMoviesFragment : BaseFragment() {
         viewModel.movies.removeObservers(this)
         viewModel.movies.observe(this) {
             if (!it.isNullOrEmpty()) {
-                fragment_start_rv_movies_list.run {
+                fragment_saved_movies_rv_movies_list.run {
                     viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
                     adapter = SavedMovieAdapter(it).apply {
                         layoutAnimation = AnimationUtils.loadLayoutAnimation(
@@ -101,10 +101,10 @@ class SavedMoviesFragment : BaseFragment() {
                         scheduleLayoutAnimation()
                     }
                     layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
-                    fragment_start_tv_label_for_movie.visibility = View.GONE
+                    fragment_saved_movies_tv_label_for_movie.visibility = View.GONE
                 }
             }
-            fragment_start_pb_load.visibility = View.GONE
+            fragment_saved_movies_pb_load.visibility = View.GONE
         }
     }
 }

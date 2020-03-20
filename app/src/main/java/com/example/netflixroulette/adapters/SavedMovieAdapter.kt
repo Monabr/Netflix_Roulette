@@ -53,7 +53,8 @@ class SavedMovieAdapter(
             itemView.item_movie_tv_category.text = movie.genre.toUpperCase(Locale.ROOT)
             itemView.item_movie_tv_director.text = movie.director
             itemView.item_movie_tv_name.text = movie.title
-            itemView.item_movie_tv_rating.text = movie.vote_average.toString() + R.string.Movie_max_rate
+            itemView.item_movie_tv_rating.text =
+                (movie.vote_average.toString() + R.string.Movie_max_rate)
 
             if (!movie.release_date.isNullOrBlank()) {
                 val parser = SimpleDateFormat("yyyy-MM-dd")
@@ -69,8 +70,10 @@ class SavedMovieAdapter(
                 itemView.setOnClickListener {
                     (itemView.context as MainContainerActivity).findNavController(R.id.container)
                         .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
-                            val arr = ArrayList<MovieDB>(movies)
-                            putParcelableArrayList(SearchedMovieDetailsFragment.MOVIES, arr)
+                            putParcelableArrayList(
+                                SearchedMovieDetailsFragment.MOVIES,
+                                ArrayList<MovieDB>(movies)
+                            )
                             putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
                         })
                 }
