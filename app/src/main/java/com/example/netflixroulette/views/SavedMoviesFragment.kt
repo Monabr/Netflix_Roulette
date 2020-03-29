@@ -46,7 +46,7 @@ class SavedMoviesFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         viewModel.onActivityCreated()
         checkMenu()
-        initAdapter()
+        initLayoutManager()
         initObserver()
     }
 
@@ -69,10 +69,10 @@ class SavedMoviesFragment : BaseFragment() {
     }
 
     /**
-     * Adapter initialization depends of devise orientation and also we restoring position of items list
+     * Layout manager initialization depends of devise orientation and also we restoring position of items list
      *
      */
-    private fun initAdapter() {
+    private fun initLayoutManager() {
         fragment_saved_movies_rv_movies_list.layoutManager =
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 2)

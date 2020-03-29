@@ -57,7 +57,7 @@ class SearchWithFragment : BaseFragment() {
         super.onActivityCreated(savedInstanceState)
         checkMenu()
         setSearchHint()
-        initAdapter()
+        initLayoutManager()
         initObserver()
     }
 
@@ -68,7 +68,7 @@ class SearchWithFragment : BaseFragment() {
      *
      */
     override fun onStop() {
-        var inputManager =
+        val inputManager =
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
@@ -100,11 +100,11 @@ class SearchWithFragment : BaseFragment() {
     }
 
     /**
-     * Adapter initialization depends of devise orientation and also we restoring position of items list
+     * Layout manager initialization depends of devise orientation and also we restoring position of items list
      * and also set text changed listener with delay [afterTextChangedDelayed].
      *
      */
-    private fun initAdapter() {
+    private fun initLayoutManager() {
         fragment_search_with_rv_movie_list.layoutManager =
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 2)
@@ -114,7 +114,7 @@ class SearchWithFragment : BaseFragment() {
         fragment_search_with_rv_movie_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
 
         fragment_search_with_et_search.afterTextChangedDelayed {
-            if (!it.isNullOrBlank()) {
+            if (!it.isBlank()) {
                 fragment_search_with_pb_load?.visibility = View.VISIBLE
                 fragment_search_with_tv_label_empty_results.visibility = View.GONE
                 if (arguments?.getString(SEARCH_WITH, DEF_VALUE) == TITLE) {
