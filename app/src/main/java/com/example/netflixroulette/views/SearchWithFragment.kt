@@ -118,9 +118,9 @@ class SearchWithFragment : BaseFragment() {
                 fragment_search_with_pb_load?.visibility = View.VISIBLE
                 fragment_search_with_tv_label_empty_results.visibility = View.GONE
                 if (arguments?.getString(SEARCH_WITH, DEF_VALUE) == TITLE) {
-                    viewModel.handleSearchByTitle(it)
+                    viewModel.handleSearchByTitle(requireContext(), it)
                 } else {
-                    viewModel.handleSearchByPerson(it)
+                    viewModel.handleSearchByPerson(requireContext(), it)
                 }
             }
         }
