@@ -5,7 +5,7 @@ Application has different list view based on device orientation
 
 The app gifs has low fps (~20fps) because of size limit, but you can be sure that app does his work very smoothly, clone it and you will see.
 
-## Start
+## Start screen
 <img width="33%" src="https://user-images.githubusercontent.com/30532666/83295760-30bee680-a1f8-11ea-9108-86b2f231d449.gif"/>
 
 ## Search with (the first image - title, the second one - person or in other words the director name)
