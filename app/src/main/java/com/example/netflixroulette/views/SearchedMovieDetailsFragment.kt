@@ -1,5 +1,6 @@
 package com.example.netflixroulette.views
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,10 +8,10 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.netflixroulette.R
 import com.example.netflixroulette.adapters.SearchedMovieDetailsAdapter
-import com.example.netflixroulette.dagger.AppComponentProvider
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.viewModels.SearchedMovieDetailsViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
+import com.example.netflixroulette.views.support_views.MainContainerActivity
 import com.google.android.material.snackbar.Snackbar
 import kotlinx.android.synthetic.main.activity_main_container.*
 import kotlinx.android.synthetic.main.fragment_details.*
@@ -39,9 +40,9 @@ class SearchedMovieDetailsFragment : BaseFragment(), SearchedMovieDetailsAdapter
         const val CURRENT_ITEM = "current_item"
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AppComponentProvider.provideAppComponent(requireContext()).inject(this)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainContainerActivity).appComponent.inject(this)
     }
 
     override fun onCreateView(

@@ -18,7 +18,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.adapters.SearchedMovieAdapter
-import com.example.netflixroulette.dagger.AppComponentProvider
 import com.example.netflixroulette.viewModels.SearchViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
 import com.example.netflixroulette.views.support_views.MainContainerActivity
@@ -41,9 +40,9 @@ class SearchWithFragment : BaseFragment() {
         const val DEF_VALUE = "error :("
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AppComponentProvider.provideAppComponent(requireContext()).inject(this)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainContainerActivity).appComponent.inject(this)
     }
 
     override fun onCreateView(

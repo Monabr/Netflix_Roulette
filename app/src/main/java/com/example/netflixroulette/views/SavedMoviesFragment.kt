@@ -1,5 +1,6 @@
 package com.example.netflixroulette.views
 
+import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -12,7 +13,6 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.adapters.SavedMovieAdapter
-import com.example.netflixroulette.dagger.AppComponentProvider
 import com.example.netflixroulette.viewModels.SavedMoviesViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
 import com.example.netflixroulette.views.support_views.MainContainerActivity
@@ -30,9 +30,9 @@ class SavedMoviesFragment : BaseFragment() {
         fun newInstance() = SavedMoviesFragment()
     }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        AppComponentProvider.provideAppComponent(requireContext()).inject(this)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        (activity as MainContainerActivity).appComponent.inject(this)
     }
 
     override fun onCreateView(

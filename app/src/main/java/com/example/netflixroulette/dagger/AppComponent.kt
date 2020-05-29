@@ -1,10 +1,12 @@
 package com.example.netflixroulette.dagger
 
+import android.content.Context
 import com.example.netflixroulette.dagger.modules.*
 import com.example.netflixroulette.views.SavedMovieDetailsFragment
 import com.example.netflixroulette.views.SavedMoviesFragment
 import com.example.netflixroulette.views.SearchWithFragment
 import com.example.netflixroulette.views.SearchedMovieDetailsFragment
+import dagger.BindsInstance
 import dagger.Component
 import javax.inject.Singleton
 
@@ -22,10 +24,9 @@ interface AppComponent {
     fun inject(savedMovieDetailsFragment: SavedMovieDetailsFragment)
 
 
-    @Component.Builder
-    interface Builder {
-        fun initDBModule(dbModule: DBModule): Builder
-
-        fun build(): AppComponent
+    @Component.Factory
+    interface Factory {
+        // With @BindsInstance, the Context passed in will be available in the graph
+        fun create(@BindsInstance context: Context): AppComponent
     }
 }

@@ -6,8 +6,8 @@ import dagger.Module
 import dagger.Provides
 
 @Module
-class DBModule(val context: Context) {
+class DBModule {
 
     @Provides
-    fun provideMovieDB() = MovieDatabase.getDatabase(context)
+    fun provideMovieDB(context: Context) = MovieDatabase.getDatabase(context)
 }

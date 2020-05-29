@@ -6,7 +6,9 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
+import com.example.netflixroulette.App
 import com.example.netflixroulette.R
+import com.example.netflixroulette.dagger.AppComponent
 import com.example.netflixroulette.views.SearchWithFragment
 import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main_container.*
@@ -16,8 +18,21 @@ import kotlinx.android.synthetic.main.activity_main_container.*
  */
 class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
+    /**
+     * To use in all child fragments for inject
+     *
+     * ```
+     * override fun onAttach(context: Context) {
+     *      super.onAttach(context)
+     *      (activity as MainContainerActivity).appComponent.inject(this)
+     * }
+     * ```
+     */
+    lateinit var appComponent: AppComponent
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        appComponent = (applicationContext as App).appComponent
         setContentView(R.layout.activity_main_container)
         setSupportActionBar(activity_main_container_toolbar)
 
