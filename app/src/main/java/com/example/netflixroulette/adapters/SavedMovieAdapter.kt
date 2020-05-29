@@ -54,7 +54,7 @@ class SavedMovieAdapter(
             itemView.item_movie_tv_director.text = movie.director
             itemView.item_movie_tv_name.text = movie.title
             itemView.item_movie_tv_rating.text =
-                (movie.vote_average.toString() + R.string.Movie_max_rate)
+                (movie.vote_average.toString() + itemView.context.getString(R.string.Movie_max_rate))
 
             if (!movie.release_date.isNullOrBlank()) {
                 val parser = SimpleDateFormat("yyyy-MM-dd")
