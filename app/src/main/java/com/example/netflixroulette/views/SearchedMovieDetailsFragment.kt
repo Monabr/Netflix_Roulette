@@ -59,9 +59,9 @@ class SearchedMovieDetailsFragment : BaseFragment(), SearchedMovieDetailsAdapter
         initViewPager()
     }
 
-    override fun onStop() {
+    override fun onDestroy() {
+        super.onDestroy()
         activity?.activity_main_container_toolbar?.visibility = View.VISIBLE
-        super.onStop()
     }
 
     override fun onAdapterItemBackArrowPressed() {
