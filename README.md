@@ -9,7 +9,7 @@ The app gifs has low fps (~20fps) because of size limit, but you can be sure tha
 <img width="33%" src="https://user-images.githubusercontent.com/30532666/83295760-30bee680-a1f8-11ea-9108-86b2f231d449.gif"/>
 
 ## Search with (the first image - title, the second one - person or in other words the director name)
-Notice that API doesn't have direct search by person name, you shoud make some custom request work to get such results. <br/> <br/>
+Notice that API doesn't have direct search by person name, you shoud make some custom request work to get such results. And it's also true for some characteristics (like category of the movie or director of the movie when we use search by title, etc) <br/> <br/>
 <img width="33%" src="https://user-images.githubusercontent.com/30532666/83284907-0fed9580-a1e6-11ea-9bc1-b8629cb05a0a.gif"/> <img width="33%" src="https://user-images.githubusercontent.com/30532666/83296214-091c4e00-a1f9-11ea-86b1-9e3187aae1dc.gif"/>
 
 ## List movies details
