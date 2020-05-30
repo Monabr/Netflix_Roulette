@@ -13,4 +13,27 @@
     <string name="Navigation_Search_with_person">Search with person</string>
     
     <string name="Movie_max_rate">/10</string>
+    <string name="bad_request">The server did not understand the request.</string>
+    <string name="unauthorized">The requested result needs a username and a password.</string>
+    <string name="payment_required">Payment Required</string>
+    <string name="forbidden">Access is forbidden to the requested result.</string>
+    <string name="not_found">The server can not find the requested result.</string>
+    <string name="method_not_allowed">The method specified in the request is not allowed.</string>
+    <string name="not_acceptable">The server can only generate a response that is not accepted by the client.</string>
+    <string name="proxy_authentication_required">You must authenticate with a proxy server before this request can be served.</string>
+    <string name="request_timeout">The request took longer than the server was prepared to wait.</string>
+    <string name="conflict">The request could not be completed because of a conflict.</string>
+    <string name="gone">The requested result is no longer available.</string>
+    <string name="precondition_failed">The pre condition given in the request evaluated to false by the server.</string>
+    <string name="payload_too_large">The server will not accept the request, because the request entity is too large.</string>
+    <string name="length_required">The \"Content-Length\" is not defined. The server will not accept the request without it.</string>
+    <string name="uri_too_long">The server will not accept the request, because the url is too long.</string>
+    <string name="unsupported_media_type">The server will not accept the request, because the media type is not supported.</string>
+    <string name="range_not_satisfiable">The requested byte range is not available and is out of bounds.</string>
+    <string name="expectation_failed">The expectation given in an Expect request-header field could not be met by this server.</string>
+    <string name="internal_server_error">The request was not completed. The server met an unexpected condition.</string>
+    <string name="not_implemented">The server does not support the functionality required to fulfill the request.</string>
+    <string name="bad_gateway">The server, while acting as a gateway or proxy, received an invalid response from the upstream server it accessed in attempting to fulfill the request.</string>
+    <string name="service_unavailable">Server unavailable. Check your internet connection or try later.</string>
+    <string name="unknown_error">Unknown error</string>
 </resources>

@@ -10,14 +10,13 @@ class ThemoviedbRemoteStore @Inject constructor(
     private val themoviedbApi: ThemoviedbApi
 ) {
 
-    suspend fun getSearchedMovies(movieName: String) = themoviedbApi.getSearchedMovieAsync(movieName).await().results
+    suspend fun getSearchedMovies(movieName: String) = themoviedbApi.getSearchedMovieAsync(movieName)
 
-    suspend fun getGenres() = themoviedbApi.getGenresAsync().await().genres
+    suspend fun getGenres() = themoviedbApi.getGenresAsync()
 
-    suspend fun getCrew(movieId: String) = themoviedbApi.getCrewAsync(movieId).await().crew
+    suspend fun getCrew(movieId: String) = themoviedbApi.getCrewAsync(movieId)
 
-    suspend fun getSearchedPersons(personName: String) =
-        themoviedbApi.getSearchedPersonsAsync(personName).await().results
+    suspend fun getSearchedPersons(personName: String) = themoviedbApi.getSearchedPersonsAsync(personName)
 
-    suspend fun getPersonMovies(personId: Int) = themoviedbApi.getPersonMoviesAsync(personId).await().crew
+    suspend fun getPersonMovies(personId: Int) = themoviedbApi.getPersonMoviesAsync(personId)
 }

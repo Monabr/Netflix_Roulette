@@ -1,17 +1,15 @@
 package com.example.netflixroulette.viewModels
 
-import android.content.Context
 import android.os.Parcelable
-import android.widget.Toast
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import com.example.netflixroulette.helpers.ErrorHandler
 import com.example.netflixroulette.models.json.jsonModels.Genre
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.models.json.jsonModels.PersonCrew
 import com.example.netflixroulette.repository.network.ThemoviedbRepository
 import kotlinx.coroutines.*
 import retrofit2.HttpException
-import java.net.UnknownHostException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
@@ -45,6 +43,11 @@ class SearchViewModel @Inject constructor(
     var movies: MutableLiveData<List<Movie>> = MutableLiveData()
 
     /**
+     * Error code for observing in fragment
+     */
+    var error: MutableLiveData<Int> = MutableLiveData()
+
+    /**
      * Saved position of items list
      */
     var scrollPosition: Parcelable? = null
@@ -61,25 +64,41 @@ class SearchViewModel @Inject constructor(
     /**
      * Handle search request to search using title and post value to [movies]
      *
-     * @param context for [Toast.makeText]
      * @param movieName just movie name
      */
-    fun handleSearchByTitle(context: Context, movieName: String) = launch {
+    fun handleSearchByTitle(movieName: String) = launch {
         if (movieName.isNotBlank()) {
             try {
                 if (genresList.isEmpty()) {
-                    genresList = themoviedbRepository.getGenres()
+                    val genresListResponse = themoviedbRepository.getGenres()
+                    val genresListResponseBody = genresListResponse.body()
+                    if (genresListResponse.isSuccessful && genresListResponseBody != null) {
+                        genresList = genresListResponseBody.genres
+                    } else {
+                        error.postValue(genresListResponse.code())
+                        return@launch
+                    }
                 }
-                var moviesResponse = themoviedbRepository.getSearchedMovies(movieName)
 
-                addCategory(moviesResponse)
-                addDirector(moviesResponse)
+                val moviesResponse = themoviedbRepository.getSearchedMovies(movieName)
 
-                movies.postValue(moviesResponse)
+                if (moviesResponse.isSuccessful) {
+                    val movieBody = moviesResponse.body()
+                    if (movieBody != null && !movieBody.results.isNullOrEmpty()) {
+                        var movieList = movieBody.results
+
+                        addCategory(movieList)
+                        addDirector(movieList)
+
+                        movies.postValue(movieList)
+                    } else {
+                        movies.postValue(emptyList())
+                    }
+                } else {
+                    error.postValue(moviesResponse.code())
+                }
             } catch (ex: Exception) {
-                withContext(Dispatchers.Main) {
-                    handleException(context, ex)
-                }
+                error.postValue(ErrorHandler.SERVICE_UNAVAILABLE)
             }
         }
     }
@@ -87,31 +106,55 @@ class SearchViewModel @Inject constructor(
     /**
      * Handle search request to search using name of movie director and post value to [movies]
      *
-     * @param context for [Toast.makeText]
      * @param personName just name of movie director
      */
-    fun handleSearchByPerson(context: Context, personName: String) = launch {
+    fun handleSearchByPerson(personName: String) = launch {
         if (personName.isNotBlank()) {
             try {
-                if (genresList.isEmpty()) {
-                    genresList = themoviedbRepository.getGenres()
+                val genresListResponse = themoviedbRepository.getGenres()
+                val genresListResponseBody = genresListResponse.body()
+                if (genresListResponse.isSuccessful && genresListResponseBody != null) {
+                    genresList = genresListResponseBody.genres
+                } else {
+                    error.postValue(genresListResponse.code())
+                    return@launch
                 }
-                var persons = themoviedbRepository.getSearchedPersons(personName)
-                var person = persons.find { it.known_for_department == "Directing" }
-                if (person != null) {
-                    var credits = themoviedbRepository.getPersonMovies(person.id)
-                    var moviesData: ArrayList<Movie> = ArrayList()
-                    credits.forEach { if (it.job == "Director") moviesData.add(mapToMovie(it)) }
 
-                    addCategory(moviesData)
-                    addDirector(moviesData)
+                val personsResponse = themoviedbRepository.getSearchedPersons(personName)
 
-                    movies.postValue(moviesData)
+                if (personsResponse.isSuccessful) {
+                    val personBody = personsResponse.body()
+                    if (personBody != null && !personBody.results.isNullOrEmpty()) {
+
+                        val persons = personBody.results
+                        val person = persons.find { it.known_for_department == "Directing" }
+                        if (person != null) {
+                            val creditsResponse = themoviedbRepository.getPersonMovies(person.id)
+
+                            if (creditsResponse.isSuccessful) {
+                                val credits = creditsResponse.body()?.crew
+                                val moviesData = mutableListOf<Movie>()
+                                credits?.forEach { if (it.job == "Director") moviesData.add(mapToMovie(it)) }
+
+                                addCategory(moviesData)
+                                addDirector(moviesData)
+
+                                movies.postValue(moviesData)
+                            } else {
+                                error.postValue(genresListResponse.code())
+                                return@launch
+                            }
+                        } else {
+                            movies.postValue(emptyList())
+                        }
+                    } else {
+                        movies.postValue(emptyList())
+                    }
+                } else {
+                    error.postValue(personsResponse.code())
                 }
             } catch (ex: Exception) {
-                withContext(Dispatchers.Main) {
-                    handleException(context, ex)
-                }
+                error.postValue(ErrorHandler.SERVICE_UNAVAILABLE)
             }
         }
     }
@@ -148,10 +191,13 @@ class SearchViewModel @Inject constructor(
     private suspend fun addDirector(movies: List<Movie>) {
         for (index in movies.indices) {
             movies[index].director = ""
-            themoviedbRepository.getCrew(movies[index].id.toString())
-                .filter { it.job == "Director" }
-                .forEach { movies[index].director += it.name + " " }
-
+            val crewResponse = themoviedbRepository.getCrew(movies[index].id.toString())
+            if (crewResponse.isSuccessful) {
+                crewResponse.body()?.crew?.filter { it.job == "Director" }
+                    ?.forEach { movies[index].director += it.name + " " }
+            } else {
+                throw HttpException(crewResponse)
+            }
             if (movies[index].director.isEmpty()) {
                 movies[index].director = "No director"
             }
@@ -184,115 +230,5 @@ class SearchViewModel @Inject constructor(
         )
     }
 
-    /**
-     * Handle exception and make message after it
-     *
-     * @param context for [Toast.makeText]
-     * @param ex actual exception to handle
-     */
-    private fun handleException(context: Context, ex: Exception) {
-        when (ex) {
-            is UnknownHostException -> Toast.makeText(context, "No internet", Toast.LENGTH_LONG)
-                .show()
-            is HttpException -> {
-                when (ex.code()) {
-                    400 -> Toast.makeText(
-                        context,
-                        "The server did not understand the request.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    401 -> Toast.makeText(
-                        context,
-                        "The requested result needs a username and a password.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    402 -> Toast.makeText(context, "Payment Required", Toast.LENGTH_LONG).show()
-                    403 -> Toast.makeText(
-                        context,
-                        "Access is forbidden to the requested result.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    404 -> Toast.makeText(
-                        context,
-                        "The server can not find the requested result.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    405 -> Toast.makeText(
-                        context,
-                        "The method specified in the request is not allowed.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    406 -> Toast.makeText(
-                        context,
-                        "The server can only generate a response that is not accepted by the client.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    407 -> Toast.makeText(
-                        context,
-                        "You must authenticate with a proxy server before this request can be served.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    408 -> Toast.makeText(
-                        context,
-                        "The request took longer than the server was prepared to wait.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    409 -> Toast.makeText(
-                        context,
-                        "The request could not be completed because of a conflict.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    410 -> Toast.makeText(
-                        context,
-                        "The requested result is no longer available.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    411 -> Toast.makeText(
-                        context,
-                        "The \"Content-Length\" is not defined. The server will not accept the request without it.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    412 -> Toast.makeText(
-                        context,
-                        "The pre condition given in the request evaluated to false by the server.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    413 -> Toast.makeText(
-                        context,
-                        "The server will not accept the request, because the request entity is too large.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    414 -> Toast.makeText(
-                        context,
-                        "The server will not accept the request, because the url is too long.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    415 -> Toast.makeText(
-                        context,
-                        "The server will not accept the request, because the media type is not supported.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    416 -> Toast.makeText(
-                        context,
-                        "The requested byte range is not available and is out of bounds.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    417 -> Toast.makeText(
-                        context,
-                        "The expectation given in an Expect request-header field could not be met by this server.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    500 -> Toast.makeText(
-                        context,
-                        "The request was not completed. The server met an unexpected condition.",
-                        Toast.LENGTH_LONG
-                    ).show()
-                    else -> Toast.makeText(context, "Unknown error", Toast.LENGTH_LONG).show()
-                }
-            }
-            else -> Toast.makeText(context, "Unknown error", Toast.LENGTH_LONG).show()
-        }
-
-    }
 }
 

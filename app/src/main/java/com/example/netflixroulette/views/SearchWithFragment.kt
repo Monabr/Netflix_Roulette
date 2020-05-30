@@ -18,10 +18,12 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.adapters.SearchedMovieAdapter
+import com.example.netflixroulette.helpers.ErrorHandler
 import com.example.netflixroulette.viewModels.SearchViewModel
 import com.example.netflixroulette.views.support_views.BaseFragment
 import com.example.netflixroulette.views.support_views.MainContainerActivity
 import kotlinx.android.synthetic.main.fragment_search_with.*
+import javax.inject.Inject
 
 
 class SearchWithFragment : BaseFragment() {
@@ -30,6 +32,12 @@ class SearchWithFragment : BaseFragment() {
      * ViewModel for handle search
      */
     private val viewModel: SearchViewModel by viewModels()
+
+    /**
+     * Entity that insulate errors codes and display error message base on code [ErrorHandler.showError]
+     */
+    @Inject
+    lateinit var errorHandler: ErrorHandler
 
     companion object {
         fun newInstance() = SearchWithFragment()
@@ -57,7 +65,7 @@ class SearchWithFragment : BaseFragment() {
         checkMenu()
         setSearchHint()
         initLayoutManager()
-        initObserver()
+        initObservers()
     }
 
     /**
@@ -117,9 +125,9 @@ class SearchWithFragment : BaseFragment() {
                 fragment_search_with_pb_load?.visibility = View.VISIBLE
                 fragment_search_with_tv_label_empty_results.visibility = View.GONE
                 if (arguments?.getString(SEARCH_WITH, DEF_VALUE) == TITLE) {
-                    viewModel.handleSearchByTitle(requireContext(), it)
+                    viewModel.handleSearchByTitle(it)
                 } else {
-                    viewModel.handleSearchByPerson(requireContext(), it)
+                    viewModel.handleSearchByPerson(it)
                 }
             }
         }
@@ -129,7 +137,13 @@ class SearchWithFragment : BaseFragment() {
      * Observer initialization for getting data and using mechanism of saving and restore position of items list to prevent flickering
      *
      */
-    private fun initObserver() {
+    private fun initObservers() {
+
+        viewModel.error.removeObservers(this)
+        viewModel.error.observe(viewLifecycleOwner) {
+            errorHandler.showError(it)
+        }
+
         viewModel.movies.removeObservers(this)
         viewModel.movies.observe(viewLifecycleOwner) {
             fragment_search_with_tv_label.visibility = View.GONE

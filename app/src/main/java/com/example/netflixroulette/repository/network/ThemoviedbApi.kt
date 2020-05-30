@@ -1,7 +1,7 @@
 package com.example.netflixroulette.repository.network
 
 import com.example.netflixroulette.models.json.jsonResponse.*
-import kotlinx.coroutines.Deferred
+import retrofit2.Response
 import retrofit2.http.GET
 import retrofit2.http.Path
 import retrofit2.http.Query
@@ -15,18 +15,18 @@ const val API_KEY = "9d4cbef8fef8814809eead3ab4dcdf92"
 interface ThemoviedbApi {
 
     @GET("search/movie?api_key=$API_KEY")
-    fun getSearchedMovieAsync(@Query("query") movieName: String): Deferred<ResponseMovie>
+    suspend fun getSearchedMovieAsync(@Query("query") movieName: String): Response<ResponseMovie>
 
     @GET("genre/movie/list?api_key=$API_KEY")
-    fun getGenresAsync(): Deferred<ResponseGenre>
+    suspend fun getGenresAsync(): Response<ResponseGenre>
 
     @GET("movie/{movie_id}/credits?api_key=$API_KEY")
-    fun getCrewAsync(@Path("movie_id") movieId: String): Deferred<ResponseCredit>
+    suspend fun getCrewAsync(@Path("movie_id") movieId: String): Response<ResponseCredit>
 
     @GET("search/person?api_key=$API_KEY")
-    fun getSearchedPersonsAsync(@Query("query") personName: String): Deferred<ResponsePerson>
+    suspend fun getSearchedPersonsAsync(@Query("query") personName: String): Response<ResponsePerson>
 
     @GET("person/{person_id}/movie_credits?api_key=$API_KEY")
-    fun getPersonMoviesAsync(@Path("person_id") person_id: Int): Deferred<ResponsePersonMovieCredis>
+    suspend fun getPersonMoviesAsync(@Path("person_id") person_id: Int): Response<ResponsePersonMovieCredis>
 }
 

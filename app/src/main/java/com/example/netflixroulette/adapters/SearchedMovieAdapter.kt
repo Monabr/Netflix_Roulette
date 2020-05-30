@@ -68,7 +68,7 @@ class SearchedMovieAdapter(
                 itemView.setOnClickListener {
                     (itemView.context as MainContainerActivity).findNavController(R.id.container)
                         .navigate(R.id.detailsFragment, Bundle().apply {
-                            var arr = ArrayList<Movie>(movies)
+                            val arr = ArrayList<Movie>(movies)
                             putParcelableArrayList(SearchedMovieDetailsFragment.MOVIES, arr)
                             putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
                         })
