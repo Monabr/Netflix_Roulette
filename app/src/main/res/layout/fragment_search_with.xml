@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context=".views.SearchWithFragment">
+    tools:context=".ui.searchWith.SearchWithFragment">
 
     <EditText
         android:id="@+id/fragment_search_with_et_search"

@@ -1,4 +1,4 @@
-package com.example.netflixroulette.views
+package com.example.netflixroulette.ui.searchWith
 
 import android.content.Context
 import android.content.res.Configuration
@@ -12,21 +12,21 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
-import com.example.netflixroulette.adapters.SearchedMovieAdapter
+import com.example.netflixroulette.databinding.FragmentSearchWithBinding
 import com.example.netflixroulette.helpers.ErrorHandler
-import com.example.netflixroulette.viewModels.SearchViewModel
-import com.example.netflixroulette.views.support_views.BaseFragment
-import com.example.netflixroulette.views.support_views.MainContainerActivity
-import kotlinx.android.synthetic.main.fragment_search_with.*
+import com.example.netflixroulette.ui.MainContainerActivity
+import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
-
-class SearchWithFragment : BaseFragment() {
+@AndroidEntryPoint
+class SearchWithFragment : Fragment() {
+    private var _binding: FragmentSearchWithBinding? = null
+    private val binding get() = _binding!!
 
     /**
      * ViewModel for handle search
@@ -39,25 +39,18 @@ class SearchWithFragment : BaseFragment() {
     @Inject
     lateinit var errorHandler: ErrorHandler
 
-    companion object {
-        fun newInstance() = SearchWithFragment()
-
-        const val SEARCH_WITH = "Search with "
-        const val TITLE = "title"
-        const val PERSON = "person"
-        const val DEF_VALUE = "error :("
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (activity as MainContainerActivity).appComponent.inject(this)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_search_with, container, false)
+        // Inflate the layout for this fragment
+        _binding = FragmentSearchWithBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -79,8 +72,7 @@ class SearchWithFragment : BaseFragment() {
             context?.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputManager.hideSoftInputFromWindow(view?.windowToken, 0)
 
-        viewModel.scrollPosition =
-            fragment_search_with_rv_movie_list.layoutManager?.onSaveInstanceState()
+        viewModel.scrollPosition = binding.fragmentSearchWithRvMovieList.layoutManager?.onSaveInstanceState()
 
         super.onStop()
     }
@@ -102,8 +94,7 @@ class SearchWithFragment : BaseFragment() {
      *
      */
     private fun setSearchHint() {
-        fragment_search_with_et_search.hint =
-            SEARCH_WITH + arguments?.getString(SEARCH_WITH, DEF_VALUE)
+        binding.fragmentSearchWithEtSearch.hint = SEARCH_WITH + arguments?.getString(SEARCH_WITH, DEF_VALUE)
     }
 
     /**
@@ -112,18 +103,18 @@ class SearchWithFragment : BaseFragment() {
      *
      */
     private fun initLayoutManager() {
-        fragment_search_with_rv_movie_list.layoutManager =
+        binding.fragmentSearchWithRvMovieList.layoutManager =
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 2)
             } else {
                 LinearLayoutManager(context)
             }
-        fragment_search_with_rv_movie_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
+        binding.fragmentSearchWithRvMovieList.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
 
-        fragment_search_with_et_search.afterTextChangedDelayed {
-            if (!it.isBlank()) {
-                fragment_search_with_pb_load?.visibility = View.VISIBLE
-                fragment_search_with_tv_label_empty_results.visibility = View.GONE
+        binding.fragmentSearchWithEtSearch.afterTextChangedDelayed {
+            if (it.isNotBlank()) {
+                binding.fragmentSearchWithPbLoad.visibility = View.VISIBLE
+                binding.fragmentSearchWithTvLabelEmptyResults.visibility = View.GONE
                 if (arguments?.getString(SEARCH_WITH, DEF_VALUE) == TITLE) {
                     viewModel.handleSearchByTitle(it)
                 } else {
@@ -140,19 +131,19 @@ class SearchWithFragment : BaseFragment() {
     private fun initObservers() {
 
         viewModel.error.removeObservers(this)
-        viewModel.error.observe(viewLifecycleOwner) {
-            errorHandler.showError(it)
+        viewModel.error.observe(this) {
+            errorHandler.showError(requireContext(), it)
         }
 
         viewModel.movies.removeObservers(this)
-        viewModel.movies.observe(viewLifecycleOwner) {
-            fragment_search_with_tv_label.visibility = View.GONE
-            fragment_search_with_pb_load.visibility = View.GONE
+        viewModel.movies.observe(this) {
+            binding.fragmentSearchWithTvLabel.visibility = View.GONE
+            binding.fragmentSearchWithPbLoad.visibility = View.GONE
             if (it.isNullOrEmpty()) {
-                fragment_search_with_tv_label_empty_results.visibility = View.VISIBLE
+                binding.fragmentSearchWithTvLabelEmptyResults.visibility = View.VISIBLE
             }
 
-            fragment_search_with_rv_movie_list.run {
+            binding.fragmentSearchWithRvMovieList.run {
                 viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
                 adapter = SearchedMovieAdapter(it).apply {
                     layoutAnimation = AnimationUtils.loadLayoutAnimation(
@@ -200,5 +191,14 @@ class SearchWithFragment : BaseFragment() {
                 }.start()
             }
         })
+    }
+
+    companion object {
+        fun newInstance() = SearchWithFragment()
+
+        const val SEARCH_WITH = "Search with "
+        const val TITLE = "title"
+        const val PERSON = "person"
+        const val DEF_VALUE = "error :("
     }
 }

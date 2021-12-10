@@ -1,7 +1,6 @@
 package com.example.netflixroulette.models.db
 
 import android.os.Parcelable
-import androidx.room.Embedded
 import androidx.room.Entity
 import androidx.room.PrimaryKey
 import kotlinx.android.parcel.Parcelize
@@ -22,8 +21,7 @@ data class MovieDB(
     val release_date: String?,
     val original_language: String?,
     val original_title: String?,
-    @Embedded
-    val genre_ids: ArrayList<String>?,
+    val genre_ids: List<String>?,
     val backdrop_path: String?,
     val adult: Boolean?,
     val overview: String?,

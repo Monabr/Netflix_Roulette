@@ -5,16 +5,14 @@ import android.widget.Toast
 import com.example.netflixroulette.R
 import javax.inject.Inject
 
-class ErrorHandler @Inject constructor(
-    private val context: Context
-) {
+class ErrorHandler @Inject constructor() {
 
     /**
      * Use this method to display error message
      *
      * @param code error code to display message
      */
-    fun showError(code: Int) {
+    fun showError(context: Context, code: Int) {
         when (code) {
             BAD_REQUEST -> Toast.makeText(
                 context,

@@ -1,45 +1,43 @@
-package com.example.netflixroulette.views
+package com.example.netflixroulette.ui.saved
 
-import android.content.Context
 import android.content.res.Configuration
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.AnimationUtils
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import androidx.lifecycle.observe
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
-import com.example.netflixroulette.adapters.SavedMovieAdapter
-import com.example.netflixroulette.viewModels.SavedMoviesViewModel
-import com.example.netflixroulette.views.support_views.BaseFragment
-import com.example.netflixroulette.views.support_views.MainContainerActivity
-import kotlinx.android.synthetic.main.fragment_saved_movies.*
+import com.example.netflixroulette.databinding.FragmentSavedMoviesBinding
+import com.example.netflixroulette.ui.MainContainerActivity
+import dagger.hilt.android.AndroidEntryPoint
 
-
-class SavedMoviesFragment : BaseFragment() {
+@AndroidEntryPoint
+class SavedMoviesFragment : Fragment() {
+    private var _binding: FragmentSavedMoviesBinding? = null
+    private val binding get() = _binding!!
 
     /**
      * ViewModel for get saved movies from database
      */
     private val viewModel: SavedMoviesViewModel by viewModels()
 
-    companion object {
-        fun newInstance() = SavedMoviesFragment()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (activity as MainContainerActivity).appComponent.inject(this)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.fragment_saved_movies, container, false)
+        // Inflate the layout for this fragment
+        _binding = FragmentSavedMoviesBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -55,8 +53,7 @@ class SavedMoviesFragment : BaseFragment() {
      *
      */
     override fun onStop() {
-        viewModel.scrollPosition =
-            fragment_saved_movies_rv_movies_list.layoutManager?.onSaveInstanceState()
+        viewModel.scrollPosition = binding.fragmentSavedMoviesRvMoviesList.layoutManager?.onSaveInstanceState()
         super.onStop()
     }
 
@@ -73,14 +70,14 @@ class SavedMoviesFragment : BaseFragment() {
      *
      */
     private fun initLayoutManager() {
-        fragment_saved_movies_rv_movies_list.layoutManager =
+        binding.fragmentSavedMoviesRvMoviesList.layoutManager =
             if (resources.configuration.orientation == Configuration.ORIENTATION_LANDSCAPE) {
                 GridLayoutManager(context, 2)
             } else {
                 LinearLayoutManager(context)
             }
 
-        fragment_saved_movies_rv_movies_list.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
+        binding.fragmentSavedMoviesRvMoviesList.layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
     }
 
     /**
@@ -91,7 +88,7 @@ class SavedMoviesFragment : BaseFragment() {
         viewModel.movies.removeObservers(this)
         viewModel.movies.observe(this) {
             if (!it.isNullOrEmpty()) {
-                fragment_saved_movies_rv_movies_list.run {
+                binding.fragmentSavedMoviesRvMoviesList.run {
                     viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
                     adapter = SavedMovieAdapter(it).apply {
                         layoutAnimation = AnimationUtils.loadLayoutAnimation(
@@ -101,10 +98,15 @@ class SavedMoviesFragment : BaseFragment() {
                         scheduleLayoutAnimation()
                     }
                     layoutManager?.onRestoreInstanceState(viewModel.scrollPosition)
-                    fragment_saved_movies_tv_label_for_movie.visibility = View.GONE
+                    binding.fragmentSavedMoviesTvLabelForMovie.visibility = View.GONE
                 }
             }
-            fragment_saved_movies_pb_load.visibility = View.GONE
+            binding.fragmentSavedMoviesPbLoad.visibility = View.GONE
         }
     }
+
+    companion object {
+        fun newInstance() = SavedMoviesFragment()
+    }
+
 }

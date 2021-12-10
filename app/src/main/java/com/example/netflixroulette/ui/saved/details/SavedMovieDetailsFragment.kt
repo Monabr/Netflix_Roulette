@@ -1,22 +1,21 @@
-package com.example.netflixroulette.views
+package com.example.netflixroulette.ui.saved.details
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
-import com.example.netflixroulette.R
-import com.example.netflixroulette.adapters.SavedMovieDetailsAdapter
+import com.example.netflixroulette.databinding.FragmentDetailsBinding
 import com.example.netflixroulette.models.db.MovieDB
-import com.example.netflixroulette.viewModels.SavedMovieDetailsViewModel
-import com.example.netflixroulette.views.support_views.BaseFragment
-import com.example.netflixroulette.views.support_views.MainContainerActivity
+import com.example.netflixroulette.ui.MainContainerActivity
 import com.google.android.material.snackbar.Snackbar
-import kotlinx.android.synthetic.main.activity_main_container.*
-import kotlinx.android.synthetic.main.fragment_details.*
+import dagger.hilt.android.AndroidEntryPoint
 
-class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallBackAdapterListener {
+@AndroidEntryPoint
+class SavedMovieDetailsFragment : Fragment(), SavedMovieDetailsAdapter.CallBackAdapterListener {
+    private var _binding: FragmentDetailsBinding? = null
+    private val binding get() = _binding!!
 
     /**
      * ViewModel for handling delete or save action
@@ -40,28 +39,29 @@ class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallB
         const val CURRENT_ITEM = "current_item"
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        (activity as MainContainerActivity).appComponent.inject(this)
-    }
-
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        viewLocal = inflater.inflate(R.layout.fragment_details, container, false)
-        return viewLocal
+        // Inflate the layout for this fragment
+        _binding = FragmentDetailsBinding.inflate(inflater, container, false)
+        return binding.root
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        activity?.activity_main_container_toolbar?.visibility = View.GONE
+        (activity as MainContainerActivity).binding.activityMainContainerToolbar.visibility = View.GONE
         initFields()
         initViewPager()
     }
 
     override fun onStop() {
-        activity?.activity_main_container_toolbar?.visibility = View.VISIBLE
+        (activity as MainContainerActivity).binding.activityMainContainerToolbar.visibility = View.VISIBLE
         super.onStop()
     }
 
@@ -83,7 +83,7 @@ class SavedMovieDetailsFragment : BaseFragment(), SavedMovieDetailsAdapter.CallB
     }
 
     private fun initViewPager() {
-        fragment_details_vp_main.adapter = savedMovieDetailsAdapter
-        fragment_details_vp_main.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
+        binding.fragmentDetailsVpMain.adapter = savedMovieDetailsAdapter
+        binding.fragmentDetailsVpMain.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
     }
 }

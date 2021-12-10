@@ -1,4 +1,4 @@
-package com.example.netflixroulette.viewModels
+package com.example.netflixroulette.ui.searchWith
 
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
@@ -8,11 +8,13 @@ import com.example.netflixroulette.models.json.jsonModels.Genre
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.models.json.jsonModels.PersonCrew
 import com.example.netflixroulette.repository.network.ThemoviedbRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import retrofit2.HttpException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@HiltViewModel
 class SearchViewModel @Inject constructor(
     private val themoviedbRepository: ThemoviedbRepository
 ) : ViewModel(), CoroutineScope {

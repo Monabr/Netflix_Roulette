@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
-    tools:context=".views.SavedMoviesFragment">
+    tools:context=".ui.saved.SavedMoviesFragment">
 
     <TextView
         android:id="@+id/fragment_saved_movies_tv_label_for_movie"

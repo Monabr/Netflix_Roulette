@@ -7,19 +7,19 @@
 
     <fragment
         android:id="@+id/SavedMoviesFragment"
-        android:name="com.example.netflixroulette.views.SavedMoviesFragment"
+        android:name="com.example.netflixroulette.ui.saved.SavedMoviesFragment"
         android:label="fragment_saved_movies"
         tools:layout="@layout/fragment_saved_movies" />
     <fragment
         android:id="@+id/searchWithFragment"
-        android:name="com.example.netflixroulette.views.SearchWithFragment"
+        android:name="com.example.netflixroulette.ui.searchWith.SearchWithFragment"
         android:label="SearchWithFragment" />
     <fragment
         android:id="@+id/detailsFragment"
-        android:name="com.example.netflixroulette.views.SearchedMovieDetailsFragment"
+        android:name="com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment"
         android:label="DetailsFragment" />
     <fragment
         android:id="@+id/savedMovieDetailsFragment"
-        android:name="com.example.netflixroulette.views.SavedMovieDetailsFragment"
+        android:name="com.example.netflixroulette.ui.saved.details.SavedMovieDetailsFragment"
         android:label="SavedMovieDetailsFragment" />
 </navigation>

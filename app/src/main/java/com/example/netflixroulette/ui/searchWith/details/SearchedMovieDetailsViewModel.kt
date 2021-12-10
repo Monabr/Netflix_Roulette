@@ -1,4 +1,4 @@
-package com.example.netflixroulette.viewModels
+package com.example.netflixroulette.ui.searchWith.details
 
 import android.database.sqlite.SQLiteConstraintException
 import android.view.View
@@ -7,10 +7,12 @@ import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.repository.network.ThemoviedbRepository
 import com.google.android.material.snackbar.Snackbar
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@HiltViewModel
 class SearchedMovieDetailsViewModel @Inject constructor(
     private val themoviedbRepository: ThemoviedbRepository
 ) : ViewModel(), CoroutineScope {

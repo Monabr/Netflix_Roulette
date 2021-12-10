@@ -1,4 +1,4 @@
-package com.example.netflixroulette.views.support_views
+package com.example.netflixroulette.ui
 
 import android.os.Bundle
 import android.view.MenuItem
@@ -6,45 +6,36 @@ import androidx.appcompat.app.ActionBarDrawerToggle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.navigation.findNavController
-import com.example.netflixroulette.App
 import com.example.netflixroulette.R
-import com.example.netflixroulette.dagger.AppComponent
-import com.example.netflixroulette.views.SearchWithFragment
+import com.example.netflixroulette.databinding.ActivityMainContainerBinding
+import com.example.netflixroulette.ui.searchWith.SearchWithFragment
 import com.google.android.material.navigation.NavigationView
-import kotlinx.android.synthetic.main.activity_main_container.*
+import dagger.hilt.android.AndroidEntryPoint
 
 /**
  * Main container for all application fragments since it's single activity application
  */
+
+@AndroidEntryPoint
 class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener {
 
-    /**
-     * To use in all child fragments for inject
-     *
-     * ```
-     * override fun onAttach(context: Context) {
-     *      super.onAttach(context)
-     *      (activity as MainContainerActivity).appComponent.inject(this)
-     * }
-     * ```
-     */
-    lateinit var appComponent: AppComponent
+    lateinit var binding: ActivityMainContainerBinding
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        appComponent = (applicationContext as App).appComponent
-        setContentView(R.layout.activity_main_container)
-        setSupportActionBar(activity_main_container_toolbar)
+        binding = ActivityMainContainerBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+        setSupportActionBar(binding.activityMainContainerToolbar)
 
         val toggle = ActionBarDrawerToggle(
-            this, drawer_layout, activity_main_container_toolbar,
+            this, binding.drawerLayout, binding.activityMainContainerToolbar,
             R.string.navigation_drawer_open, R.string.navigation_drawer_close
         )
 
-        drawer_layout.addDrawerListener(toggle)
+        binding.drawerLayout.addDrawerListener(toggle)
         toggle.syncState()
 
-        activity_main_container_nv_navigation.setNavigationItemSelectedListener(this)
+        binding.activityMainContainerNvNavigation.setNavigationItemSelectedListener(this)
     }
 
     /**
@@ -52,8 +43,8 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
      *
      */
     override fun onBackPressed() {
-        if (drawer_layout.isDrawerOpen(GravityCompat.START)) {
-            drawer_layout.closeDrawer(GravityCompat.START)
+        if (binding.drawerLayout.isDrawerOpen(GravityCompat.START)) {
+            binding.drawerLayout.closeDrawer(GravityCompat.START)
         } else {
             super.onBackPressed()
         }
@@ -77,7 +68,7 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
                     })
             }
         }
-        drawer_layout.closeDrawer(GravityCompat.START)
+        binding.drawerLayout.closeDrawer(GravityCompat.START)
         return true
     }
 
@@ -89,7 +80,7 @@ class MainContainerActivity : AppCompatActivity(), NavigationView.OnNavigationIt
      * @param id id item that should be checked
      */
     fun setNavItemChecked(id: Int) {
-        activity_main_container_nv_navigation.menu.getItem(id).isChecked = true
+        binding.activityMainContainerNvNavigation.menu.getItem(id).isChecked = true
     }
 
 }

@@ -1,14 +1,16 @@
-package com.example.netflixroulette.viewModels
+package com.example.netflixroulette.ui.saved
 
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.repository.network.ThemoviedbRepository
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
 
+@HiltViewModel
 class SavedMoviesViewModel @Inject constructor(
     private val themoviedbRepository: ThemoviedbRepository
 ) : ViewModel(), CoroutineScope {

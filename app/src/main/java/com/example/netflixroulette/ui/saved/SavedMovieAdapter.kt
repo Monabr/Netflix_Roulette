@@ -1,8 +1,7 @@
-package com.example.netflixroulette.adapters
+package com.example.netflixroulette.ui.saved
 
 import android.os.Bundle
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
@@ -10,28 +9,30 @@ import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.netflixroulette.R
-import com.example.netflixroulette.models.json.jsonModels.Movie
-import com.example.netflixroulette.views.SearchedMovieDetailsFragment
-import com.example.netflixroulette.views.support_views.MainContainerActivity
-import kotlinx.android.synthetic.main.item_movie.view.*
+import com.example.netflixroulette.databinding.ItemMovieBinding
+import com.example.netflixroulette.models.db.MovieDB
+import com.example.netflixroulette.ui.MainContainerActivity
+import com.example.netflixroulette.ui.searchWith.IMAGE_BASE
+import com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment
 import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
-const val IMAGE_BASE = "https://image.tmdb.org/t/p/w500"
 
-class SearchedMovieAdapter(
-    var movies: List<Movie>
-) : RecyclerView.Adapter<SearchedMovieAdapter.ViewHolder>() {
+class SavedMovieAdapter(
+    var movies: List<MovieDB>
+) : RecyclerView.Adapter<SavedMovieAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
-        ViewHolder(LayoutInflater.from(parent.context).inflate(R.layout.item_movie, parent, false))
+        ViewHolder(ItemMovieBinding.inflate(LayoutInflater.from(parent.context), parent, false))
 
     override fun getItemCount() = movies.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) =
         holder.bind(movies[position], position)
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(movie: Movie, position: Int) {
+    inner class ViewHolder(private val binding: ItemMovieBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(movie: MovieDB, position: Int) {
 
             val circularProgressDrawable = CircularProgressDrawable(itemView.context)
                 .apply {
@@ -47,29 +48,32 @@ class SearchedMovieAdapter(
                 .placeholder(circularProgressDrawable)
                 .fallback(R.drawable.no_image_poster)
                 .error(R.drawable.no_image_poster)
-                .into(itemView.item_movie_iv_poster)
+                .into(binding.itemMovieIvPoster)
 
-            itemView.item_movie_tv_category.text = movie.genre.toUpperCase()
-            itemView.item_movie_tv_director.text = movie.director
-            itemView.item_movie_tv_name.text = movie.title
-            itemView.item_movie_tv_rating.text = movie.vote_average.toString() + "/10"
+            binding.itemMovieTvCategory.text = movie.genre.toUpperCase(Locale.ROOT)
+            binding.itemMovieTvDirector.text = movie.director
+            binding.itemMovieTvName.text = movie.title
+            binding.itemMovieTvRating.text =
+                (movie.vote_average.toString() + itemView.context.getString(R.string.Movie_max_rate))
 
             if (!movie.release_date.isNullOrBlank()) {
                 val parser = SimpleDateFormat("yyyy-MM-dd")
                 val formatter = SimpleDateFormat("dd.MM.yyyy")
                 val formattedDate = formatter.format(parser.parse(movie.release_date))
-                itemView.item_movie_tv_release_date.text = formattedDate
+                binding.itemMovieTvReleaseDate.text = formattedDate
             } else {
-                itemView.item_movie_tv_release_date.text =
+                binding.itemMovieTvReleaseDate.text =
                     itemView.context.getText(R.string.MovieAdapter_Unknown_date)
             }
 
             if (!itemView.hasOnClickListeners()) {
                 itemView.setOnClickListener {
                     (itemView.context as MainContainerActivity).findNavController(R.id.container)
-                        .navigate(R.id.detailsFragment, Bundle().apply {
-                            val arr = ArrayList<Movie>(movies)
-                            putParcelableArrayList(SearchedMovieDetailsFragment.MOVIES, arr)
+                        .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
+                            putParcelableArrayList(
+                                SearchedMovieDetailsFragment.MOVIES,
+                                ArrayList<MovieDB>(movies)
+                            )
                             putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
                         })
                 }

@@ -1,37 +1,33 @@
-package com.example.netflixroulette.adapters
+package com.example.netflixroulette.ui.searchWith.details
 
 import android.view.LayoutInflater
-import android.view.View
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.netflixroulette.R
-import com.example.netflixroulette.models.db.MovieDB
-import kotlinx.android.synthetic.main.item_details.view.*
+import com.example.netflixroulette.databinding.ItemDetailsBinding
+import com.example.netflixroulette.models.json.jsonModels.Movie
+import com.example.netflixroulette.ui.searchWith.IMAGE_BASE
 import java.text.SimpleDateFormat
 
-class SavedMovieDetailsAdapter(
-    var movies: List<MovieDB>,
+
+class SearchedMovieDetailsAdapter(
+    var movies: List<Movie>,
     var callBackAdapterListener: CallBackAdapterListener
-) : RecyclerView.Adapter<SavedMovieDetailsAdapter.ViewHolder>() {
+) : RecyclerView.Adapter<SearchedMovieDetailsAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) = ViewHolder(
-        LayoutInflater.from(parent.context).inflate(
-            R.layout.item_details,
-            parent,
-            false
-        )
+        ItemDetailsBinding.inflate(LayoutInflater.from(parent.context), parent, false)
     )
 
     override fun getItemCount() = movies.size
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) = holder.bind(movies[position])
 
-    inner class ViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
-        fun bind(movie: MovieDB) {
-
+    inner class ViewHolder(private val binding: ItemDetailsBinding) : RecyclerView.ViewHolder(binding.root) {
+        fun bind(movie: Movie) {
             val circularProgressDrawable = CircularProgressDrawable(itemView.context)
                 .apply {
                     strokeWidth = 5f
@@ -46,29 +42,29 @@ class SavedMovieDetailsAdapter(
                 .placeholder(circularProgressDrawable)
                 .fallback(R.drawable.no_image_poster)
                 .error(R.drawable.no_image_poster)
-                .into(itemView.item_details_iv_poster)
+                .into(binding.itemDetailsIvPoster)
 
-            itemView.item_details_tv_title.text = movie.title
-            itemView.item_details_tv_director.text = movie.director
-            itemView.item_details_tv_rating.text = movie.vote_average.toString() + "/10"
+            binding.itemDetailsTvTitle.text = movie.title
+            binding.itemDetailsTvDirector.text = movie.director
+            binding.itemDetailsTvRating.text = (movie.vote_average.toString() + "/10")
 
             if(!movie.release_date.isNullOrBlank())  {
                 val parser =  SimpleDateFormat("yyyy-MM-dd")
                 val formatter = SimpleDateFormat("dd.MM.yyyy")
                 val formattedDate = formatter.format(parser.parse(movie.release_date))
-                itemView.item_details_tv_release.text = formattedDate
+                binding.itemDetailsTvRelease.text = formattedDate
             } else {
-                itemView.item_details_tv_release.text =
+                binding.itemDetailsTvRelease.text =
                     itemView.context.getText(R.string.MovieAdapter_Unknown_date)
             }
 
-            itemView.item_details_tv_summary.text = movie.overview
+            binding.itemDetailsTvSummary.text = movie.overview
 
-            itemView.item_details_ib_back.setOnClickListener {
+            binding.itemDetailsIbBack.setOnClickListener {
                 callBackAdapterListener.onAdapterItemBackArrowPressed()
             }
 
-            itemView.item_details_ib_save.setOnClickListener {
+            binding.itemDetailsIbSave.setOnClickListener {
                 callBackAdapterListener.onAdapterItemSavePressed(movie)
             }
 
@@ -77,6 +73,6 @@ class SavedMovieDetailsAdapter(
 
     interface CallBackAdapterListener {
         fun onAdapterItemBackArrowPressed()
-        fun onAdapterItemSavePressed(movie: MovieDB)
+        fun onAdapterItemSavePressed(movie: Movie)
     }
 }
