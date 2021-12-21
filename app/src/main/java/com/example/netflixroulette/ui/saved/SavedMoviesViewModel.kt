@@ -4,7 +4,7 @@ import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.example.netflixroulette.models.db.MovieDB
-import com.example.netflixroulette.repository.network.ThemoviedbRepository
+import com.example.netflixroulette.repository.ThemoviedbRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import javax.inject.Inject

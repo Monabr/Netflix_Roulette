@@ -1,7 +1,8 @@
-package com.example.netflixroulette.repository.network
+package com.example.netflixroulette.repository
 
 import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.repository.database.MovieDatabase
+import com.example.netflixroulette.repository.network.ThemoviedbRemoteStore
 import javax.inject.Inject
 import javax.inject.Singleton
 

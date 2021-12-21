@@ -7,7 +7,7 @@ import com.example.netflixroulette.helpers.ErrorHandler
 import com.example.netflixroulette.models.json.jsonModels.Genre
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.models.json.jsonModels.PersonCrew
-import com.example.netflixroulette.repository.network.ThemoviedbRepository
+import com.example.netflixroulette.repository.ThemoviedbRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.*
 import retrofit2.HttpException
