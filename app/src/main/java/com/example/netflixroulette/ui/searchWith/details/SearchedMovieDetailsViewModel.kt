@@ -32,23 +32,26 @@ class SearchedMovieDetailsViewModel @Inject constructor(
         get() = Dispatchers.IO + job
 
     /**
+     * Use to observe the save status of movies
+     *
+     */
+    var isSaved: MutableLiveData<Boolean> = MutableLiveData()
+
+    /**
      * Save or delete movie depends if it's already in database and makes notification about it
      *
-     * @param view for [Snackbar.make] notification
      * @param movie that we want save or delete
      */
-    fun handleActionSave(view: View, movie: Movie) = launch {
+    fun handleActionSave(movie: Movie) = launch {
         val movieDB = mapToModelDB(movie)
         try {
             themoviedbRepository.insertMovie(movieDB)
-            withContext(Dispatchers.Main) {
-                Snackbar.make(view, "Saved", Snackbar.LENGTH_SHORT).show()
-            }
+            isSaved.postValue(true)
+
         } catch (e: SQLiteConstraintException) {
             themoviedbRepository.deleteMovie(movieDB)
-            withContext(Dispatchers.Main) {
-                Snackbar.make(view, "Deleted", Snackbar.LENGTH_SHORT).show()
-            }
+            isSaved.postValue(false)
+
         }
     }
 

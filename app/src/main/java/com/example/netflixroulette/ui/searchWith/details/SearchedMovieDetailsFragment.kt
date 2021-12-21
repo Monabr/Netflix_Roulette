@@ -27,11 +27,6 @@ class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.Cal
      */
     private lateinit var searchedMovieDetailsAdapter: SearchedMovieDetailsAdapter
 
-    /**
-     * Local link on view, we need it for [Snackbar.make] in [SearchedMovieDetailsViewModel.handleActionSave]
-     */
-    private lateinit var viewLocal: View
-
     companion object {
         fun newInstance() = SearchedMovieDetailsFragment()
 
@@ -58,6 +53,7 @@ class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.Cal
         (activity as MainContainerActivity).binding.activityMainContainerToolbar.visibility = View.GONE
         initFields()
         initViewPager()
+        initObservers()
     }
 
     override fun onDestroy() {
@@ -70,10 +66,7 @@ class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.Cal
     }
 
     override fun onAdapterItemSavePressed(movie: Movie) {
-        viewModelSearchedMovie.handleActionSave(
-            viewLocal,
-            movie
-        )
+        viewModelSearchedMovie.handleActionSave(movie)
     }
 
     private fun initFields() {
@@ -85,5 +78,15 @@ class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.Cal
     private fun initViewPager() {
         binding.fragmentDetailsVpMain.adapter = searchedMovieDetailsAdapter
         binding.fragmentDetailsVpMain.setCurrentItem(arguments?.getInt(CURRENT_ITEM, 0) ?: 0, false)
+    }
+
+    private fun initObservers() {
+        viewModelSearchedMovie.isSaved.observe(this) {
+            if (it) {
+                view?.let { viewNotNull -> Snackbar.make(viewNotNull, "Saved", Snackbar.LENGTH_SHORT).show() }
+            } else {
+                view?.let { viewNotNull -> Snackbar.make(viewNotNull, "Deleted", Snackbar.LENGTH_SHORT).show() }
+            }
+        }
     }
 }
