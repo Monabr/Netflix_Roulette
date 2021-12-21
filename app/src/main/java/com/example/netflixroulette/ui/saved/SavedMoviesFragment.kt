@@ -8,11 +8,14 @@ import android.view.ViewGroup
 import android.view.animation.AnimationUtils
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.databinding.FragmentSavedMoviesBinding
+import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.ui.MainContainerActivity
+import com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
@@ -86,11 +89,23 @@ class SavedMoviesFragment : Fragment() {
      */
     private fun initObserver() {
         viewModel.movies.removeObservers(this)
-        viewModel.movies.observe(this) {
-            if (!it.isNullOrEmpty()) {
+        viewModel.movies.observe(this) { movies ->
+            if (!movies.isNullOrEmpty()) {
                 binding.fragmentSavedMoviesRvMoviesList.run {
                     viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
-                    adapter = SavedMovieAdapter(it).apply {
+                    adapter = SavedMovieAdapter(
+                        movies = movies,
+                        onNavigateToDetails = { position ->
+                            findNavController()
+                                .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
+                                    putParcelableArrayList(
+                                        SearchedMovieDetailsFragment.MOVIES,
+                                        ArrayList<MovieDB>(movies)
+                                    )
+                                    putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
+                                })
+                        }
+                    ).apply {
                         layoutAnimation = AnimationUtils.loadLayoutAnimation(
                             context,
                             R.anim.layout_animation_from_right

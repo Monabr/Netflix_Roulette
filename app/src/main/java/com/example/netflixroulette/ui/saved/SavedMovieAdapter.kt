@@ -1,9 +1,7 @@
 package com.example.netflixroulette.ui.saved
 
-import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import androidx.navigation.findNavController
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.CircularProgressDrawable
 import com.bumptech.glide.Glide
@@ -11,16 +9,14 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy
 import com.example.netflixroulette.R
 import com.example.netflixroulette.databinding.ItemMovieBinding
 import com.example.netflixroulette.models.db.MovieDB
-import com.example.netflixroulette.ui.MainContainerActivity
 import com.example.netflixroulette.ui.searchWith.IMAGE_BASE
-import com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 
 
 class SavedMovieAdapter(
-    var movies: List<MovieDB>
+    var movies: List<MovieDB>,
+    val onNavigateToDetails: (position: Int) -> Unit
 ) : RecyclerView.Adapter<SavedMovieAdapter.ViewHolder>() {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int) =
@@ -68,14 +64,7 @@ class SavedMovieAdapter(
 
             if (!itemView.hasOnClickListeners()) {
                 itemView.setOnClickListener {
-                    (itemView.context as MainContainerActivity).findNavController(R.id.container)
-                        .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
-                            putParcelableArrayList(
-                                SearchedMovieDetailsFragment.MOVIES,
-                                ArrayList<MovieDB>(movies)
-                            )
-                            putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
-                        })
+                    onNavigateToDetails(position)
                 }
             }
         }

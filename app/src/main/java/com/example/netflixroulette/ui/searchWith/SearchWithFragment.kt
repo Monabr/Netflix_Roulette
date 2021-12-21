@@ -14,12 +14,15 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.databinding.FragmentSearchWithBinding
 import com.example.netflixroulette.helpers.ErrorHandler
+import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.ui.MainContainerActivity
+import com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
 
@@ -136,16 +139,26 @@ class SearchWithFragment : Fragment() {
         }
 
         viewModel.movies.removeObservers(this)
-        viewModel.movies.observe(this) {
+        viewModel.movies.observe(this) { movies ->
             binding.fragmentSearchWithTvLabel.visibility = View.GONE
             binding.fragmentSearchWithPbLoad.visibility = View.GONE
-            if (it.isNullOrEmpty()) {
+            if (movies.isNullOrEmpty()) {
                 binding.fragmentSearchWithTvLabelEmptyResults.visibility = View.VISIBLE
             }
 
             binding.fragmentSearchWithRvMovieList.run {
                 viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
-                adapter = SearchedMovieAdapter(it).apply {
+                adapter = SearchedMovieAdapter(
+                    movies = movies,
+                    onNavigateToDetails = { position ->
+                        findNavController()
+                            .navigate(R.id.detailsFragment, Bundle().apply {
+                                val arr = ArrayList<Movie>(movies)
+                                putParcelableArrayList(SearchedMovieDetailsFragment.MOVIES, arr)
+                                putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
+                            })
+                    }
+                ).apply {
                     layoutAnimation = AnimationUtils.loadLayoutAnimation(
                         context,
                         R.anim.layout_animation_from_bottom
