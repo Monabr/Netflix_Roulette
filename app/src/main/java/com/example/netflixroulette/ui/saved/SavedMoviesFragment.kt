@@ -13,10 +13,11 @@ import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.databinding.FragmentSavedMoviesBinding
-import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.ui.MainContainerActivity
 import com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class SavedMoviesFragment : Fragment() {
@@ -89,7 +90,7 @@ class SavedMoviesFragment : Fragment() {
      */
     private fun initObserver() {
         viewModel.movies.removeObservers(this)
-        viewModel.movies.observe(this) { movies ->
+        viewModel.movies.observe(this.viewLifecycleOwner) { movies ->
             if (!movies.isNullOrEmpty()) {
                 binding.fragmentSavedMoviesRvMoviesList.run {
                     viewModel.scrollPosition = layoutManager?.onSaveInstanceState()
@@ -98,9 +99,9 @@ class SavedMoviesFragment : Fragment() {
                         onNavigateToDetails = { position ->
                             findNavController()
                                 .navigate(R.id.savedMovieDetailsFragment, Bundle().apply {
-                                    putParcelableArrayList(
+                                    putString(
                                         SearchedMovieDetailsFragment.MOVIES,
-                                        ArrayList<MovieDB>(movies)
+                                        Json.encodeToString(movies)
                                     )
                                     putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
                                 })

@@ -3,6 +3,7 @@ package com.example.netflixroulette.ui.searchWith
 import android.os.Parcelable
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.example.netflixroulette.helpers.ErrorHandler
 import com.example.netflixroulette.models.json.jsonModels.Genre
 import com.example.netflixroulette.models.json.jsonModels.Movie
@@ -13,6 +14,7 @@ import kotlinx.coroutines.*
 import retrofit2.HttpException
 import javax.inject.Inject
 import kotlin.coroutines.CoroutineContext
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class SearchViewModel @Inject constructor(
@@ -24,6 +26,11 @@ class SearchViewModel @Inject constructor(
      *
      */
     private val job = SupervisorJob()
+
+    /**
+     * Saved last search job to cancel it after new search request.
+     */
+    private var lastSearchJob: Job? = null
 
     /**
      * Using for set default dispatcher so you no need to create yours for [launch] something.
@@ -68,39 +75,43 @@ class SearchViewModel @Inject constructor(
      *
      * @param movieName just movie name
      */
-    fun handleSearchByTitle(movieName: String) = launch {
-        if (movieName.isNotBlank()) {
-            try {
-                if (genresList.isEmpty()) {
-                    val genresListResponse = themoviedbRepository.getGenres()
-                    val genresListResponseBody = genresListResponse.body()
-                    if (genresListResponse.isSuccessful && genresListResponseBody != null) {
-                        genresList = genresListResponseBody.genres
-                    } else {
-                        error.postValue(genresListResponse.code())
-                        return@launch
+    fun handleSearchByTitle(movieName: String) {
+        lastSearchJob?.cancel()
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
+            if (movieName.isNotBlank()) {
+                try {
+                    if (genresList.isEmpty()) {
+                        val genresListResponse = themoviedbRepository.getGenres()
+                        val genresListResponseBody = genresListResponse.body()
+                        if (genresListResponse.isSuccessful && genresListResponseBody != null) {
+                            genresList = genresListResponseBody.genres
+                        } else {
+                            error.postValue(genresListResponse.code())
+                            return@launch
+                        }
                     }
-                }
 
-                val moviesResponse = themoviedbRepository.getSearchedMovies(movieName)
+                    val moviesResponse = themoviedbRepository.getSearchedMovies(movieName)
 
-                if (moviesResponse.isSuccessful) {
-                    val movieBody = moviesResponse.body()
-                    if (movieBody != null && !movieBody.results.isNullOrEmpty()) {
-                        var movieList = movieBody.results
+                    if (moviesResponse.isSuccessful) {
+                        val movieBody = moviesResponse.body()
+                        if (movieBody != null && movieBody.results.isNotEmpty()) {
+                            val movieList = movieBody.results
 
-                        addCategory(movieList)
-                        addDirector(movieList)
+                            addCategory(movieList)
+                            addDirector(movieList)
 
-                        movies.postValue(movieList)
+                            movies.postValue(movieList)
+                        } else {
+                            movies.postValue(emptyList())
+                        }
                     } else {
-                        movies.postValue(emptyList())
+                        error.postValue(moviesResponse.code())
                     }
-                } else {
-                    error.postValue(moviesResponse.code())
+                } catch (_: CancellationException) {
+                } catch (ex: Exception) {
+                    error.postValue(ErrorHandler.SERVICE_UNAVAILABLE)
                 }
-            } catch (ex: Exception) {
-                error.postValue(ErrorHandler.SERVICE_UNAVAILABLE)
             }
         }
     }
@@ -110,53 +121,57 @@ class SearchViewModel @Inject constructor(
      *
      * @param personName just name of movie director
      */
-    fun handleSearchByPerson(personName: String) = launch {
-        if (personName.isNotBlank()) {
-            try {
-                val genresListResponse = themoviedbRepository.getGenres()
-                val genresListResponseBody = genresListResponse.body()
-                if (genresListResponse.isSuccessful && genresListResponseBody != null) {
-                    genresList = genresListResponseBody.genres
-                } else {
-                    error.postValue(genresListResponse.code())
-                    return@launch
-                }
+    fun handleSearchByPerson(personName: String) {
+        lastSearchJob?.cancel()
+        lastSearchJob = viewModelScope.launch(Dispatchers.IO) {
+            if (personName.isNotBlank()) {
+                try {
+                    val genresListResponse = themoviedbRepository.getGenres()
+                    val genresListResponseBody = genresListResponse.body()
+                    if (genresListResponse.isSuccessful && genresListResponseBody != null) {
+                        genresList = genresListResponseBody.genres
+                    } else {
+                        error.postValue(genresListResponse.code())
+                        return@launch
+                    }
 
-                val personsResponse = themoviedbRepository.getSearchedPersons(personName)
+                    val personsResponse = themoviedbRepository.getSearchedPersons(personName)
 
-                if (personsResponse.isSuccessful) {
-                    val personBody = personsResponse.body()
-                    if (personBody != null && !personBody.results.isNullOrEmpty()) {
+                    if (personsResponse.isSuccessful) {
+                        val personBody = personsResponse.body()
+                        if (personBody != null && personBody.results.isNotEmpty()) {
 
-                        val persons = personBody.results
-                        val person = persons.find { it.known_for_department == "Directing" }
-                        if (person != null) {
-                            val creditsResponse = themoviedbRepository.getPersonMovies(person.id)
+                            val persons = personBody.results
+                            val person = persons.find { it.known_for_department == "Directing" }
+                            if (person != null) {
+                                val creditsResponse = themoviedbRepository.getPersonMovies(person.id)
 
-                            if (creditsResponse.isSuccessful) {
-                                val credits = creditsResponse.body()?.crew
-                                val moviesData = mutableListOf<Movie>()
-                                credits?.forEach { if (it.job == "Director") moviesData.add(mapToMovie(it)) }
+                                if (creditsResponse.isSuccessful) {
+                                    val credits = creditsResponse.body()?.crew
+                                    val moviesData = mutableListOf<Movie>()
+                                    credits?.forEach { if (it.job == "Director") moviesData.add(mapToMovie(it)) }
 
-                                addCategory(moviesData)
-                                addDirector(moviesData)
+                                    addCategory(moviesData)
+                                    addDirector(moviesData)
 
-                                movies.postValue(moviesData)
+                                    movies.postValue(moviesData)
+                                } else {
+                                    error.postValue(genresListResponse.code())
+                                    return@launch
+                                }
                             } else {
-                                error.postValue(genresListResponse.code())
-                                return@launch
+                                movies.postValue(emptyList())
                             }
                         } else {
                             movies.postValue(emptyList())
                         }
                     } else {
-                        movies.postValue(emptyList())
+                        error.postValue(personsResponse.code())
                     }
-                } else {
-                    error.postValue(personsResponse.code())
+                } catch (_: CancellationException) {
+                } catch (ex: Exception) {
+                    error.postValue(ErrorHandler.SERVICE_UNAVAILABLE)
                 }
-            } catch (ex: Exception) {
-                error.postValue(ErrorHandler.SERVICE_UNAVAILABLE)
             }
         }
     }

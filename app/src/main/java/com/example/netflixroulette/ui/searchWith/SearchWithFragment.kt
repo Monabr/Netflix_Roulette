@@ -20,11 +20,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.netflixroulette.R
 import com.example.netflixroulette.databinding.FragmentSearchWithBinding
 import com.example.netflixroulette.helpers.ErrorHandler
-import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.ui.MainContainerActivity
 import com.example.netflixroulette.ui.searchWith.details.SearchedMovieDetailsFragment
 import dagger.hilt.android.AndroidEntryPoint
 import javax.inject.Inject
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class SearchWithFragment : Fragment() {
@@ -134,12 +135,12 @@ class SearchWithFragment : Fragment() {
     private fun initObservers() {
 
         viewModel.error.removeObservers(this)
-        viewModel.error.observe(this) {
+        viewModel.error.observe(this.viewLifecycleOwner) {
             errorHandler.showError(requireContext(), it)
         }
 
         viewModel.movies.removeObservers(this)
-        viewModel.movies.observe(this) { movies ->
+        viewModel.movies.observe(this.viewLifecycleOwner) { movies ->
             binding.fragmentSearchWithTvLabel.visibility = View.GONE
             binding.fragmentSearchWithPbLoad.visibility = View.GONE
             if (movies.isNullOrEmpty()) {
@@ -153,8 +154,10 @@ class SearchWithFragment : Fragment() {
                     onNavigateToDetails = { position ->
                         findNavController()
                             .navigate(R.id.detailsFragment, Bundle().apply {
-                                val arr = ArrayList<Movie>(movies)
-                                putParcelableArrayList(SearchedMovieDetailsFragment.MOVIES, arr)
+                                putString(
+                                    SearchedMovieDetailsFragment.MOVIES,
+                                    Json.encodeToString(movies)
+                                )
                                 putInt(SearchedMovieDetailsFragment.CURRENT_ITEM, position)
                             })
                     }

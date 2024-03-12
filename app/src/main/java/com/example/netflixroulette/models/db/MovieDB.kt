@@ -1,15 +1,14 @@
 package com.example.netflixroulette.models.db
 
-import android.os.Parcelable
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 
 /**
  * Movie model exactly for database because of Clean Architecture
  *
  */
-@Parcelize
+@Serializable
 @Entity
 data class MovieDB(
     val popularity: Double,
@@ -28,4 +27,4 @@ data class MovieDB(
     val poster_path: String?,
     var genre: String,
     var director: String
-) : Parcelable
+)

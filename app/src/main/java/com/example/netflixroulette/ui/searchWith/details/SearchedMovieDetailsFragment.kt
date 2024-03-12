@@ -9,8 +9,10 @@ import androidx.fragment.app.viewModels
 import com.example.netflixroulette.databinding.FragmentDetailsBinding
 import com.example.netflixroulette.models.json.jsonModels.Movie
 import com.example.netflixroulette.ui.MainContainerActivity
+import com.example.netflixroulette.ui.saved.details.SavedMovieDetailsFragment
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.CallBackAdapterListener {
@@ -71,8 +73,9 @@ class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.Cal
 
     private fun initFields() {
         searchedMovieDetailsAdapter = SearchedMovieDetailsAdapter(
-            arguments?.getParcelableArrayList<Movie>(MOVIES)?.toList() ?: ArrayList(),
-            this)
+            arguments?.getString(SavedMovieDetailsFragment.MOVIES)?.let { Json.decodeFromString<List<Movie>>(it) } ?: ArrayList(),
+            this
+        )
     }
 
     private fun initViewPager() {
@@ -81,7 +84,7 @@ class SearchedMovieDetailsFragment : Fragment(), SearchedMovieDetailsAdapter.Cal
     }
 
     private fun initObservers() {
-        viewModelSearchedMovie.isSaved.observe(this) {
+        viewModelSearchedMovie.isSaved.observe(this.viewLifecycleOwner) {
             if (it) {
                 view?.let { viewNotNull -> Snackbar.make(viewNotNull, "Saved", Snackbar.LENGTH_SHORT).show() }
             } else {

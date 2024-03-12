@@ -1,9 +1,8 @@
 package com.example.netflixroulette.models.json.jsonModels
 
-import android.os.Parcelable
-import kotlinx.android.parcel.Parcelize
+import kotlinx.serialization.Serializable
 
-@Parcelize
+@Serializable
 data class PersonCrew (
     val id: Int,
     val department: String,
@@ -22,4 +21,4 @@ data class PersonCrew (
     val adult: Boolean,
     val release_date: String,
     val credit_id: String
-) : Parcelable
+)

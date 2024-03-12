@@ -11,6 +11,7 @@ import com.example.netflixroulette.models.db.MovieDB
 import com.example.netflixroulette.ui.MainContainerActivity
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.serialization.json.Json
 
 @AndroidEntryPoint
 class SavedMovieDetailsFragment : Fragment(), SavedMovieDetailsAdapter.CallBackAdapterListener {
@@ -71,7 +72,7 @@ class SavedMovieDetailsFragment : Fragment(), SavedMovieDetailsAdapter.CallBackA
 
     private fun initFields() {
         savedMovieDetailsAdapter = SavedMovieDetailsAdapter(
-            arguments?.getParcelableArrayList<MovieDB>(MOVIES)?.toList() ?: ArrayList(),
+            arguments?.getString(MOVIES)?.let { Json.decodeFromString<List<MovieDB>>(it) } ?: ArrayList(),
             this)
     }
 
@@ -81,7 +82,7 @@ class SavedMovieDetailsFragment : Fragment(), SavedMovieDetailsAdapter.CallBackA
     }
 
     private fun initObservers() {
-        viewModel.isSaved.observe(this) {
+        viewModel.isSaved.observe(this.viewLifecycleOwner) {
             if (it) {
                 view?.let { viewNotNull -> Snackbar.make(viewNotNull, "Saved", Snackbar.LENGTH_SHORT).show() }
             } else {

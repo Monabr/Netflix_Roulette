@@ -17,7 +17,6 @@ class ThemoviedbApiModule {
     }
 
     @Provides
-    @NonNull
     fun provideThemoviedbApi(): ThemoviedbApi = Retrofit.Builder()
         .baseUrl(BASE_SERVER)
         .addConverterFactory(GsonConverterFactory.create())
